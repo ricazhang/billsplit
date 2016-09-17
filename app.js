@@ -21,9 +21,9 @@ var AddPerson = React.createClass({
 var PersonChecklist = React.createClass({
     renderPersonCheckbox: function(person) {
         return (
-            <div>
-                <input type="checkbox" name={ person } onClick={ this.toggleCheck } checked={ this.isPersonChecked.bind(this, person ) }/>
-                <div>{ person }</div>
+            <div onClick={ this.togglePersonCheckbox.bind(this, person) }>
+                <input type="checkbox" name={ person } checked={ this.props.selectedPeople.indexOf(person) > -1 }/>
+                { person }
             </div>
         )
     },
@@ -31,18 +31,15 @@ var PersonChecklist = React.createClass({
         return (
             <div>
                 <ul>{ this.props.people.map( this.renderPersonCheckbox ) }</ul>
-                <button type="button" ref="next-item-button" onClick={ this.next }>Next Item</button>
+                <button type="button" ref="next-item-button" onClick={ this.addItem }>Add Item</button>
             </div>
         )
     },
-    isPersonChecked: function(name) {
-        //this.props.items.
+    togglePersonCheckbox: function(name) {
+        this.props.togglePerson(name)
     },
-    toggleCheck: function() {
-        this.props.toggleCheck()
-    },
-    next: function() {
-        this.props.nextItem()
+    addItem: function() {
+        this.props.addItem(this.props.item)
     }
 })
 
@@ -54,43 +51,74 @@ var AddItem = React.createClass({
         }
     },
     render: function() {
+        console.log("rendering " + this.state.status)
         if (this.state.status === "splitting") {
             return (
                 <div>
-                    <input autoFocus type="text" ref="content"/>
-                    <button type="button" ref="add-item-button" onClick={ this.next }>Split Item</button>
+                    <input type="text" ref="content" disabled/>
+                    <button type="button" ref="add-item-button" disabled>Split Item</button>
                     <p>Who partook in the enjoyment of { this.state.mostRecentItem }?</p>
-                    <PersonChecklist people={ this.props.people } nextItem={ this.props.nextItem } />
+                    <PersonChecklist item={ this.state.mostRecentItem } selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.props.addItem } togglePerson = { this.props.togglePerson }/>
                 </div>
             )
         }
         return (
             <div>
-                <input type="text" ref="content"/>
-                <button type="button" ref="add-item-button" onClick={ this.next }>Next</button>
+                <input autoFocus type="text" ref="content" onKeyDown={ this.splitItem } />
+                <button type="button" ref="add-item-button" onClick={ this.splitItem }>Split Item</button>
             </div>
         )
     },
-    next: function() {
-        event.preventDefault()
-        this.setState({
-            status: "splitting",
-            mostRecentItem: this.refs.content.value
-        })
+    splitItem: function() {
+        if (event.key == 'Enter' || event.type === "click") {
+            event.preventDefault()
+            this.setState({
+                status: "splitting",
+                mostRecentItem: this.refs.content.value
+            })
+        }
     },
-    nextItem: function() {
-        this.props.addItem()
+    addItem: function(item) {
+        this.setState({
+            status: "new",
+            mostRecentItem: this.state.mostRecentItem
+        })
+        this.props.addItem(item)
     }
 })
+
+var prettyArray = function(arr) {
+    var str = ""
+    if (arr.length < 1) {
+        return "no one"
+    }
+    else if (arr.length == 1) {
+        return arr[0]
+    }
+    else if (arr.length == 2) {
+        str = arr[0] + " and " + arr[1]
+        return str
+    }
+    
+    for (var i in arr) {
+        if (i != arr.length - 1) {
+            str += arr[i] + ", "
+        }
+        else {
+            str += " and " + arr[i]
+        }
+    }
+    return str
+}
 
 var ItemList = React.createClass({
     renderItem: function(item) {
         return (
-            <li id={item.id} content={item.name}>{ item.name } split by { item.people }</li>
+            <li id={item} content={item}>{ item } <strong>split by</strong> { prettyArray(this.props.items[item]) }</li>
         )
     },
     render: function() {
-        console.log(this.props.items)
+        //console.log(this.props.items)
         return (
             <div>
                 <ul>{ Object.keys(this.props.items).map(this.renderItem) }</ul>
@@ -111,7 +139,6 @@ var PersonList = React.createClass({
         )
     },
     render: function() {
-        console.log(this.props.people)
         return (
             <div>
                 <ul>{ this.props.people.map(this.renderPerson) }</ul>
@@ -130,7 +157,8 @@ var App = React.createClass({
         return {
             people: [],
             items: {},
-            status: "people"
+            status: "people",
+            selectedPeople: []
         }
     },
     render: function() {
@@ -139,7 +167,7 @@ var App = React.createClass({
                 <section>
                     <h1>Bill Split</h1>
                     <p>Now enter in all the items.</p>
-                    <AddItem addItem={ this.addItem } people={ this.state.people }/>
+                    <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
                     <ItemList items={ this.state.items } itemsDone={ this.finish }/>
                 </section>
             )
@@ -158,25 +186,50 @@ var App = React.createClass({
     addPerson: function(name) {
         this.setState({
             people: this.state.people.concat(name),
-            items: this.state.items
+            items: this.state.items,
+            status: this.state.status,
+            selectedPeople: this.state.selectedPeople
         })
-        console.log(this.state.people)
     },
-    addItem: function(name, people) {
+    addItem: function(item) {
         var updatedItems = this.state.items
-        updatedItems[name] = people
-        console.log("Adding: " + name + " " + people)
+        updatedItems[item] = this.state.selectedPeople
         this.setState({
             people: this.state.people,
-            items: updatedItems
+            items: updatedItems,
+            status: this.state.status,
+            selectedPeople: []
         })
+        console.log(updatedItems)
     },
     switchToItems: function() {
         this.setState({
             people: this.state.people,
             items: this.state.items,
-            status: "items"
+            status: "items",
+            selectedPeople: this.state.selectedPeople
         })
+    },
+    togglePerson: function(name) {
+        if (this.state.selectedPeople.indexOf(name) > -1) {
+            this.setState({
+                people: this.state.people,
+                items: this.state.items,
+                status: this.state.status,
+                selectedPeople: this.state.selectedPeople.filter(function(existingName) {
+                    return existingName !== name
+                })
+            })
+        }
+        else if (this.state.selectedPeople.indexOf(name) == -1 ) {
+            console.log("adding name")
+            this.setState({
+                people: this.state.people,
+                items: this.state.items,
+                status: this.state.status,
+                selectedPeople: this.state.selectedPeople.concat(name)
+            })
+        }
     },
     finish: function() {
         alert("Done")
