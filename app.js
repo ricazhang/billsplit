@@ -22,8 +22,8 @@ var PersonChecklist = React.createClass({
     renderPersonCheckbox: function(person) {
         return (
             <div>
-                <input type="checkbox" name={ person.name } onClick={ this.toggleCheck } checked={ this.isPersonChecked.bind(this, person.name ) }/>
-                <div>{ person.name }</div>
+                <input type="checkbox" name={ person } onClick={ this.toggleCheck } checked={ this.isPersonChecked.bind(this, person ) }/>
+                <div>{ person }</div>
             </div>
         )
     },
@@ -36,7 +36,7 @@ var PersonChecklist = React.createClass({
         )
     },
     isPersonChecked: function(name) {
-        this.props.items.
+        //this.props.items.
     },
     toggleCheck: function() {
         this.props.toggleCheck()
@@ -93,7 +93,7 @@ var ItemList = React.createClass({
         console.log(this.props.items)
         return (
             <div>
-                <ul>{ this.props.items.map(this.renderItem) }</ul>
+                <ul>{ Object.keys(this.props.items).map(this.renderItem) }</ul>
                 <button type="button" ref="done-button" onClick={ this.done }>Done with Items</button>
             </div>
         )
@@ -107,7 +107,7 @@ var ItemList = React.createClass({
 var PersonList = React.createClass({
     renderPerson: function(person) {
         return (
-            <li id={person.id} content={person.name}>{ person.name }</li>
+            <li content={person}>{ person }</li>
         )
     },
     render: function() {
@@ -129,7 +129,7 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             people: [],
-            items: [],
+            items: {},
             status: "people"
         }
     },
@@ -144,37 +144,31 @@ var App = React.createClass({
                 </section>
             )
         }
-        return (
-            <section>
-                <h1>Bill Split</h1>
-                <p>First, enter in all the people involved in this transaction.</p>
-                <AddPerson onAdd={ this.addPerson } />
-                <PersonList people={ this.state.people } peopleDone={ this.switchToItems } />
-            </section>
-        )
+        else if (this.state.status === "people") {
+            return (
+                <section>
+                    <h1>Bill Split</h1>
+                    <p>First, enter in all the people involved in this transaction.</p>
+                    <AddPerson onAdd={ this.addPerson } />
+                    <PersonList people={ this.state.people } peopleDone={ this.switchToItems } />
+                </section>
+            )
+        }
     },
     addPerson: function(name) {
-        var person = {
-            id: Date.now().toString(),
-            name: name
-        }
-        console.log("Adding: " + person.name)
         this.setState({
-            people: this.state.people.concat(person),
+            people: this.state.people.concat(name),
             items: this.state.items
         })
         console.log(this.state.people)
     },
     addItem: function(name, people) {
-        var item = {
-            id: Date.now().toString(),
-            name: name,
-            people: people
-        }
-        console.log("Adding: " + item.name + " " + item.people)
+        var updatedItems = this.state.items
+        updatedItems[name] = people
+        console.log("Adding: " + name + " " + people)
         this.setState({
             people: this.state.people,
-            items: this.state.items.concat(item)
+            items: updatedItems
         })
     },
     switchToItems: function() {
