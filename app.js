@@ -4,7 +4,6 @@ var AddPerson = React.createClass({
             <div>
                 <input autoFocus type="text" ref="content" onKeyDown={ this.addPerson }/>
                 <button type="button" ref="add-person-button" onClick={ this.addPerson }>Add Person</button>
-                
             </div>
         )
     },
@@ -58,7 +57,7 @@ var AddItem = React.createClass({
                     <input type="text" ref="content" disabled/>
                     <button type="button" ref="add-item-button" disabled>Split Item</button>
                     <p>Who partook in the enjoyment of { this.state.mostRecentItem }?</p>
-                    <PersonChecklist item={ this.state.mostRecentItem } selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.props.addItem } togglePerson = { this.props.togglePerson }/>
+                    <PersonChecklist item={ this.state.mostRecentItem } selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.addItem } togglePerson = { this.props.togglePerson }/>
                 </div>
             )
         }
@@ -84,6 +83,8 @@ var AddItem = React.createClass({
             mostRecentItem: this.state.mostRecentItem
         })
         this.props.addItem(item)
+        ReactDOM.findDOMNode(this.refs.content).value = "";
+        ReactDOM.findDOMNode(this.refs.content).focus();    
     }
 })
 
@@ -122,13 +123,9 @@ var ItemList = React.createClass({
         return (
             <div>
                 <ul>{ Object.keys(this.props.items).map(this.renderItem) }</ul>
-                <button type="button" ref="done-button" onClick={ this.done }>Done with Items</button>
+                
             </div>
         )
-    },
-    done: function(event) {
-        event.preventDefault()
-        this.props.itemsDone()
     }
 })
 
@@ -167,8 +164,9 @@ var App = React.createClass({
                 <section>
                     <h1>Bill Split</h1>
                     <p>Now enter in all the items.</p>
-                    <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
                     <ItemList items={ this.state.items } itemsDone={ this.finish }/>
+                    <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
+                    <button type="button" ref="done-button" onClick={ this.done }>Done with Items</button>
                 </section>
             )
         }
@@ -231,7 +229,8 @@ var App = React.createClass({
             })
         }
     },
-    finish: function() {
+    done: function(event) {
+        event.preventDefault()
         alert("Done")
     }
 })
