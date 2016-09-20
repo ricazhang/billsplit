@@ -38,7 +38,7 @@ var PersonChecklist = React.createClass({
         this.props.togglePerson(name)
     },
     addItem: function() {
-        this.props.addItem(this.props.item)
+        this.props.addItem()
     }
 })
 
@@ -46,7 +46,8 @@ var AddItem = React.createClass({
     getInitialState: function() {
         return {
             status: "new",
-            mostRecentItem: ""
+            mostRecentItem: "",
+            mostRecentPrice: 0
         }
     },
     render: function() {
@@ -54,16 +55,18 @@ var AddItem = React.createClass({
         if (this.state.status === "splitting") {
             return (
                 <div>
-                    <input type="text" ref="content" disabled/>
+                    <input type="text" ref="itemName" disabled/>
+                    <input type="text" ref="itemPrice" disabled/>
                     <button type="button" ref="add-item-button" disabled>Split Item</button>
                     <p>Who partook in the enjoyment of { this.state.mostRecentItem }?</p>
-                    <PersonChecklist item={ this.state.mostRecentItem } selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.addItem } togglePerson = { this.props.togglePerson }/>
+                    <PersonChecklist selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.addItem } togglePerson = { this.props.togglePerson }/>
                 </div>
             )
         }
         return (
             <div>
-                <input autoFocus type="text" ref="content" onKeyDown={ this.splitItem } />
+                <input autoFocus type="text" ref="itemName" />
+                <input type="text" ref="itemPrice" onKeyDown={ this.splitItem }/>
                 <button type="button" ref="add-item-button" onClick={ this.splitItem }>Split Item</button>
             </div>
         )
@@ -73,18 +76,25 @@ var AddItem = React.createClass({
             event.preventDefault()
             this.setState({
                 status: "splitting",
-                mostRecentItem: this.refs.content.value
+                mostRecentItem: this.refs.itemName.value,
+                mostRecentPrice: this.refs.itemPrice.value
             })
         }
     },
-    addItem: function(item) {
+    addItem: function() {
+        var item = {
+            name: this.state.mostRecentItem,
+            price: this.state.mostRecentPrice
+        }
         this.setState({
             status: "new",
-            mostRecentItem: this.state.mostRecentItem
+            mostRecentItem: this.state.mostRecentItem,
+            mostRecentPrice: this.mostRecentPrice
         })
         this.props.addItem(item)
-        ReactDOM.findDOMNode(this.refs.content).value = "";
-        ReactDOM.findDOMNode(this.refs.content).focus();    
+        ReactDOM.findDOMNode(this.refs.itemName).value = "";
+        ReactDOM.findDOMNode(this.refs.itemPrice).value = "";
+        ReactDOM.findDOMNode(this.refs.itemName).focus();    
     }
 })
 
@@ -115,7 +125,7 @@ var prettyArray = function(arr) {
 var ItemList = React.createClass({
     renderItem: function(item) {
         return (
-            <li id={item} content={item}>{ item } <strong>split by</strong> { prettyArray(this.props.items[item]) }</li>
+            <li id={item} content={item}>{ item } for ${ this.props.items[item].price } <strong>split by</strong> { prettyArray(this.props.items[item].people) }</li>
         )
     },
     render: function() {
@@ -191,7 +201,10 @@ var App = React.createClass({
     },
     addItem: function(item) {
         var updatedItems = this.state.items
-        updatedItems[item] = this.state.selectedPeople
+        updatedItems[item.name] = {
+            price: item.price,
+            people: this.state.selectedPeople
+        }
         this.setState({
             people: this.state.people,
             items: updatedItems,
