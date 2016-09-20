@@ -29,6 +29,7 @@ var PersonChecklist = React.createClass({
     render: function() {
         return (
             <div>
+                <p>Who partook in the enjoyment of { this.props.recentItem }?</p>
                 <ul>{ this.props.people.map( this.renderPersonCheckbox ) }</ul>
                 <button type="button" ref="next-item-button" onClick={ this.addItem }>Add Item</button>
             </div>
@@ -56,17 +57,16 @@ var AddItem = React.createClass({
             return (
                 <div>
                     <input type="text" ref="itemName" disabled/>
-                    <input type="text" ref="itemPrice" disabled/>
+                    <input type="tel" ref="itemPrice" disabled/>
                     <button type="button" ref="add-item-button" disabled>Split Item</button>
-                    <p>Who partook in the enjoyment of { this.state.mostRecentItem }?</p>
-                    <PersonChecklist selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.addItem } togglePerson = { this.props.togglePerson }/>
+                    <PersonChecklist selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.addItem } togglePerson={ this.props.togglePerson } recentItem ={ this.state.mostRecentItem }/>
                 </div>
             )
         }
         return (
             <div>
                 <input autoFocus type="text" ref="itemName" />
-                <input type="text" ref="itemPrice" onKeyDown={ this.splitItem }/>
+                <input type="tel" ref="itemPrice" onKeyDown={ this.splitItem }/>
                 <button type="button" ref="add-item-button" onClick={ this.splitItem }>Split Item</button>
             </div>
         )
@@ -74,10 +74,14 @@ var AddItem = React.createClass({
     splitItem: function() {
         if (event.key == 'Enter' || event.type === "click") {
             event.preventDefault()
+
+            var priceInput = this.refs.itemPrice.value
+            var price = parseFloat(priceInput).toFixed(2)
+
             this.setState({
                 status: "splitting",
                 mostRecentItem: this.refs.itemName.value,
-                mostRecentPrice: this.refs.itemPrice.value
+                mostRecentPrice: price
             })
         }
     },
