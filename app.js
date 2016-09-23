@@ -48,16 +48,18 @@ var AddItem = React.createClass({
         return {
             status: "new",
             mostRecentItem: "",
-            mostRecentPrice: 0
+            mostRecentPrice: 0,
+            errorMessage: ""
         }
     },
     render: function() {
-        console.log("rendering " + this.state.status)
         if (this.state.status === "splitting") {
             return (
                 <div>
-                    <input type="text" ref="itemName" disabled/>
-                    <input type="tel" ref="itemPrice" disabled/>
+                    <label for="itemName">Item Name: </label>
+                    <input type="text" ref="itemName" name="itemName" disabled/>
+                    <label for="itemPrice">Item Price: $</label>
+                    <input type="tel" ref="itemPrice" name="itemPrice" disabled/>
                     <button type="button" ref="add-item-button" disabled>Split Item</button>
                     <PersonChecklist selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.addItem } togglePerson={ this.props.togglePerson } recentItem ={ this.state.mostRecentItem }/>
                 </div>
@@ -65,8 +67,11 @@ var AddItem = React.createClass({
         }
         return (
             <div>
-                <input autoFocus type="text" ref="itemName" />
-                <input type="tel" ref="itemPrice" onKeyDown={ this.splitItem }/>
+                <p className="error-message" ref="itemError">{ this.state.errorMessage }</p>
+                <label for="itemName">Item Name: </label>
+                <input autoFocus type="text" ref="itemName" name="itemName"/>
+                <label for="itemPrice">Item Price: $</label>
+                <input type="tel" ref="itemPrice" name="itemPrice" onKeyDown={ this.splitItem }/>
                 <button type="button" ref="add-item-button" onClick={ this.splitItem }>Split Item</button>
             </div>
         )
@@ -78,11 +83,29 @@ var AddItem = React.createClass({
             var priceInput = this.refs.itemPrice.value
             var price = parseFloat(priceInput).toFixed(2)
 
+            if (isNaN(price)) {
+                this.setState({
+                    status: this.state.status,
+                    mostRecentItem: this.state.mostRecentItem,
+                    mostRecentPrice: this.state.mostRecentPrice,
+                    errorMessage: "The item price must be a decimal number"
+                })
+                return;
+            }
+
             this.setState({
                 status: "splitting",
                 mostRecentItem: this.refs.itemName.value,
-                mostRecentPrice: price
+                mostRecentPrice: price,
+                errorMessage: ""
             })
+        }
+        // backspace and delete
+        else if (event.keyCode == 46 || event.keyCode == 8) {
+            
+        }
+        else {
+
         }
     },
     addItem: function() {
@@ -128,8 +151,14 @@ var prettyArray = function(arr) {
 
 var ItemList = React.createClass({
     renderItem: function(item) {
+        //var perPersonPrice = parseFloat(this.props.items[item].price)
+        var itemPrice = this.props.items[item].price;
+        var itemPeople = this.props.items[item].people;
+        var pricePerPerson = parseFloat(itemPrice/itemPeople.length).toFixed(2);
         return (
-            <li id={item} content={item}>{ item } for ${ this.props.items[item].price } <strong>split by</strong> { prettyArray(this.props.items[item].people) }</li>
+            <li id={item} content={item}>
+                { item } for ${ itemPrice } <strong>split by</strong> { prettyArray(itemPeople) } (for ${ pricePerPerson } per person)
+            </li>
         )
     },
     render: function() {
@@ -146,7 +175,7 @@ var ItemList = React.createClass({
 var PersonList = React.createClass({
     renderPerson: function(person) {
         return (
-            <li content={person}>{ person }</li>
+            <li>{ person }</li>
         )
     },
     render: function() {
@@ -163,6 +192,66 @@ var PersonList = React.createClass({
     }
 })
 
+var Split = React.createClass({
+    getInitialState: function() {
+        return {
+            status: "subtotal"
+        }
+    },
+    personOwes: function(person) {
+        var sum = 0.0;
+        for (var itemName in this.props.items) {
+            if (this.props.items.hasOwnProperty(itemName)) {
+                if (this.props.items[itemName].people.indexOf(person) >= 0) {
+                    var itemPrice = this.props.items[itemName].price
+                    var numPeople = this.props.items[itemName].people.length
+                    var perItemPrice = parseFloat(itemPrice/numPeople)
+                    sum += perItemPrice
+                }
+            }
+        }
+        return sum.toFixed(2)
+    },
+    personItem: function(person, itemName) {
+        if (this.props.items[itemName].people.indexOf(person) >= 0) {
+            var itemPrice = this.props.items[itemName].price
+            var numPeople = this.props.items[itemName].people.length
+            var perItemPrice = parseFloat(itemPrice/numPeople).toFixed(2)
+            if (numPeople == 1) {
+                return (
+                    <li>{ itemName }, is ${ perItemPrice }</li>
+                )
+            }
+            return (
+                <li>{ itemName }, split is ${ perItemPrice } per person</li>
+            )
+        }
+        else {
+            return null
+        }
+    },
+    renderPerson: function(person) {
+        return (
+            <li>{ person } owes ${ this.personOwes(person) } 
+                <input type="tel"/>% tip
+                <ul>{ Object.keys(this.props.items).map( item => this.personItem(person, item) )
+                }</ul>
+            </li>
+        )
+    },
+    render: function() {
+        return (
+            <div>
+                <p>Here is the split { this.state.status }!</p>
+                <label>Enter ZIP Code for Tax Rate (only SF currently supported): </label>
+                <input type="tel" value="94103"/>
+                <ul>{ this.props.people.map(this.renderPerson) }</ul>
+                <button>Apply Tax and Tip</button>
+            </div>
+        )
+    }
+})
+
 var App = React.createClass({
     getInitialState: function() {
         return {
@@ -176,7 +265,6 @@ var App = React.createClass({
         if (this.state.status === "items") {
             return (
                 <section>
-                    <h1>Bill Split</h1>
                     <p>Now enter in all the items.</p>
                     <ItemList items={ this.state.items } itemsDone={ this.finish }/>
                     <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
@@ -187,10 +275,16 @@ var App = React.createClass({
         else if (this.state.status === "people") {
             return (
                 <section>
-                    <h1>Bill Split</h1>
                     <p>First, enter in all the people involved in this transaction.</p>
                     <AddPerson onAdd={ this.addPerson } />
                     <PersonList people={ this.state.people } peopleDone={ this.switchToItems } />
+                </section>
+            )
+        }
+        else if (this.state.status === "done") {
+            return (
+                <section>
+                    <Split people={ this.state.people } items={ this.state.items } />
                 </section>
             )
         }
@@ -237,7 +331,6 @@ var App = React.createClass({
             })
         }
         else if (this.state.selectedPeople.indexOf(name) == -1 ) {
-            console.log("adding name")
             this.setState({
                 people: this.state.people,
                 items: this.state.items,
@@ -248,7 +341,14 @@ var App = React.createClass({
     },
     done: function(event) {
         event.preventDefault()
-        alert("Done")
+        this.setState({
+            people: this.state.people,
+            items: this.state.items,
+            status: "done",
+            selectedPeople: this.state.selectedPeople
+        })
+
+        
     }
 })
 
