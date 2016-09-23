@@ -199,18 +199,36 @@ var Split = React.createClass({
         }
     },
     personOwes: function(person) {
-        var sum = 0.0;
-        for (var itemName in this.props.items) {
-            if (this.props.items.hasOwnProperty(itemName)) {
-                if (this.props.items[itemName].people.indexOf(person) >= 0) {
-                    var itemPrice = this.props.items[itemName].price
-                    var numPeople = this.props.items[itemName].people.length
-                    var perItemPrice = parseFloat(itemPrice/numPeople)
-                    sum += perItemPrice
+        if (this.state.status === "subtotal") {
+            var sum = 0.0;
+            for (var itemName in this.props.items) {
+                if (this.props.items.hasOwnProperty(itemName)) {
+                    if (this.props.items[itemName].people.indexOf(person) >= 0) {
+                        var itemPrice = this.props.items[itemName].price
+                        var numPeople = this.props.items[itemName].people.length
+                        var perItemPrice = parseFloat(itemPrice/numPeople)
+                        sum += perItemPrice
+                    }
                 }
             }
+            return sum.toFixed(2)
         }
-        return sum.toFixed(2)
+        else if (this.state.status === "total") {
+            var sum = 0.0;
+            for (var itemName in this.props.items) {
+                if (this.props.items.hasOwnProperty(itemName)) {
+                    if (this.props.items[itemName].people.indexOf(person) >= 0) {
+                        var itemPrice = this.props.items[itemName].price
+                        var numPeople = this.props.items[itemName].people.length
+                        var perItemPrice = parseFloat(itemPrice/numPeople)
+                        sum += perItemPrice
+                    }
+                }
+            }
+            sum = (sum * 1.15) + (sum * 0.0875)
+            return sum.toFixed(2)
+        }
+        
     },
     personItem: function(person, itemName) {
         if (this.props.items[itemName].people.indexOf(person) >= 0) {
@@ -230,10 +248,16 @@ var Split = React.createClass({
             return null
         }
     },
+    applyTaxTip: function() {
+        this.setState({
+            status: "total"
+        })
+        this.refs.applyTaxTipButton.disabled = true
+    },
     renderPerson: function(person) {
         return (
-            <li>{ person } owes ${ this.personOwes(person) } 
-                <input type="tel"/>% tip
+            <li>{ person }'s { this.state.status } is ${ this.personOwes(person) } 
+                <input type="tel" value="15"/>% tip
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person, item) )
                 }</ul>
             </li>
@@ -246,7 +270,7 @@ var Split = React.createClass({
                 <label>Enter ZIP Code for Tax Rate (only SF currently supported): </label>
                 <input type="tel" value="94103"/>
                 <ul>{ this.props.people.map(this.renderPerson) }</ul>
-                <button>Apply Tax and Tip</button>
+                <button ref="applyTaxTipButton" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
             </div>
         )
     }
