@@ -1,3 +1,47 @@
 .error-message {
     color: red;
 }
+
+/* mobile */
+@media only screen and (min-device-width: 320px) and (max-device-width: 667px) {
+    body { 
+        width: 667px;
+        margin: auto;
+        font-size: 200%;
+        font-family: sans-serif;
+    }
+    input {
+        width: 50%;
+        height: 40px;
+        font-size: calc(100% - 6px);
+        border-bottom: #329832 3px solid;
+        border-left: white 3px solid;
+        border-right: white 3px solid;
+        border-top: white 3px solid;
+        margin-right: 10px;
+        padding: 3px;
+    }
+    input:focus {
+        outline: none;
+        /*
+        border-left: #329832 3px solid;
+        border-right: #329832 3px solid;
+        border-top: #329832 3px solid;
+        */
+    }
+    button {
+        font-size: calc(100% - 6px);
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-left: 10px;
+        padding-right: 10px;
+        height: 43px;
+        background-color: #329832;
+        border: #329832 3px solid;
+        color: white;
+    }
+    .input-label-line {
+        display: block;
+        margin-bottom: 10px;
+    }
+}

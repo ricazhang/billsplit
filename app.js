@@ -68,10 +68,14 @@ var AddItem = React.createClass({
         return (
             <div>
                 <p className="error-message" ref="itemError">{ this.state.errorMessage }</p>
-                <label for="itemName">Item Name: </label>
-                <input autoFocus type="text" ref="itemName" name="itemName"/>
-                <label for="itemPrice">Item Price: $</label>
-                <input type="tel" ref="itemPrice" name="itemPrice" onKeyDown={ this.splitItem }/>
+                <div class="input-label-line">
+                    <label for="itemName">Item Name: </label>
+                    <input autoFocus type="text" ref="itemName" name="itemName"/>
+                </div>
+                <div class="input-label-line">
+                    <label for="itemPrice">Item Price: $</label>
+                    <input type="tel" ref="itemPrice" name="itemPrice" onKeyDown={ this.splitItem }/>
+                </div>
                 <button type="button" ref="add-item-button" onClick={ this.splitItem }>Split Item</button>
             </div>
         )
