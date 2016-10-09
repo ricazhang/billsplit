@@ -17,7 +17,12 @@ var AddPerson = React.createClass({
     }
 })
 
-var PersonChecklist = React.createClass({
+var AddItem = React.createClass({
+    getInitialState: function() {
+        return {
+            errorMessage: ""
+        }
+    },
     renderPersonCheckbox: function(person) {
         return (
             <div onClick={ this.togglePersonCheckbox.bind(this, person) }>
@@ -29,44 +34,6 @@ var PersonChecklist = React.createClass({
     render: function() {
         return (
             <div>
-                <p>Who partook in the enjoyment of { this.props.recentItem }?</p>
-                <ul>{ this.props.people.map( this.renderPersonCheckbox ) }</ul>
-                <button type="button" ref="next-item-button" onClick={ this.addItem }>Add Item</button>
-            </div>
-        )
-    },
-    togglePersonCheckbox: function(name) {
-        this.props.togglePerson(name)
-    },
-    addItem: function() {
-        this.props.addItem()
-    }
-})
-
-var AddItem = React.createClass({
-    getInitialState: function() {
-        return {
-            status: "new",
-            mostRecentItem: "",
-            mostRecentPrice: 0,
-            errorMessage: ""
-        }
-    },
-    render: function() {
-        if (this.state.status === "splitting") {
-            return (
-                <div>
-                    <label for="itemName">Item Name: </label>
-                    <input type="text" ref="itemName" name="itemName" disabled/>
-                    <label for="itemPrice">Item Price: $</label>
-                    <input type="tel" ref="itemPrice" name="itemPrice" disabled/>
-                    <button type="button" ref="add-item-button" disabled>Split Item</button>
-                    <PersonChecklist selectedPeople={ this.props.selectedPeople } people={ this.props.people } addItem={ this.addItem } togglePerson={ this.props.togglePerson } recentItem ={ this.state.mostRecentItem }/>
-                </div>
-            )
-        }
-        return (
-            <div>
                 <p className="error-message" ref="itemError">{ this.state.errorMessage }</p>
                 <div class="input-label-line">
                     <label for="itemName">Item Name: </label>
@@ -76,56 +43,37 @@ var AddItem = React.createClass({
                     <label for="itemPrice">Item Price: $</label>
                     <input type="tel" ref="itemPrice" name="itemPrice" onKeyDown={ this.splitItem }/>
                 </div>
-                <button type="button" ref="add-item-button" onClick={ this.splitItem }>Split Item</button>
+                <div>
+                    <p>Split By</p>
+                    <ul>{ this.props.people.map( this.renderPersonCheckbox ) }</ul>
+                    <button type="button" onClick={ this.addItem }>Add Item</button>
+                </div>
             </div>
         )
     },
-    splitItem: function() {
-        if (event.key == 'Enter' || event.type === "click") {
-            event.preventDefault()
-
-            var priceInput = this.refs.itemPrice.value
-            var price = parseFloat(priceInput).toFixed(2)
-
-            if (isNaN(price)) {
-                this.setState({
-                    status: this.state.status,
-                    mostRecentItem: this.state.mostRecentItem,
-                    mostRecentPrice: this.state.mostRecentPrice,
-                    errorMessage: "The item price must be a decimal number"
-                })
-                return;
-            }
-
-            this.setState({
-                status: "splitting",
-                mostRecentItem: this.refs.itemName.value,
-                mostRecentPrice: price,
-                errorMessage: ""
-            })
-        }
-        // backspace and delete
-        else if (event.keyCode == 46 || event.keyCode == 8) {
-            
-        }
-        else {
-
-        }
-    },
     addItem: function() {
-        var item = {
-            name: this.state.mostRecentItem,
-            price: this.state.mostRecentPrice
+        var priceInput = this.refs.itemPrice.value
+        var price = parseFloat(priceInput).toFixed(2)
+
+        if (isNaN(price)) {
+            this.setState({
+                errorMessage: "The item price must be a decimal number"
+            })
+            return;
+
         }
-        this.setState({
-            status: "new",
-            mostRecentItem: this.state.mostRecentItem,
-            mostRecentPrice: this.mostRecentPrice
-        })
+
+        var item = {
+            name: this.refs.itemName.value,
+            price: price
+        }
+
         this.props.addItem(item)
         ReactDOM.findDOMNode(this.refs.itemName).value = "";
         ReactDOM.findDOMNode(this.refs.itemPrice).value = "";
         ReactDOM.findDOMNode(this.refs.itemName).focus();    
+    }, togglePersonCheckbox: function(name) {
+        this.props.togglePerson(name)
     }
 })
 
