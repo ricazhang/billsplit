@@ -3,14 +3,21 @@ var AddPerson = React.createClass({
         return (
             <div>
                 <input autoFocus type="text" ref="content" onKeyDown={ this.addPerson }/>
-                <button type="button" ref="add-person-button" onClick={ this.addPerson }>Add Person</button>
+                <p>Press 'Enter' or 'space' to add person.</p>
             </div>
         )
     },
     addPerson: function(event) {
-        if (event.key == 'Enter' || event.type === "click") {
+        console.log(event.key)
+        if (event.key == 'Enter') {
             event.preventDefault()
             this.props.onAdd(this.refs.content.value)
+            ReactDOM.findDOMNode(this.refs.content).value = "";  
+            ReactDOM.findDOMNode(this.refs.content).focus();  
+        }
+        else if (event.key == ' ') {
+            event.preventDefault()
+            this.props.onAdd(this.refs.content.value.trim())
             ReactDOM.findDOMNode(this.refs.content).value = "";  
             ReactDOM.findDOMNode(this.refs.content).focus();  
         }

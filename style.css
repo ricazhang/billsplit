@@ -1,14 +1,25 @@
+body {
+    font-family: sans-serif;
+}
+
 .error-message {
     color: red;
 }
 
 /* mobile */
-@media only screen and (min-device-width: 320px) and (max-device-width: 667px) {
+/* iPhone  */
+@media only screen and (min-device-width: 320px) and (max-device-width: 414px) {
+    html {
+        width: auto; /* matches width to device-width */
+        display: block; /* ensures auto width works */
+    }
     body { 
-        width: 667px;
+        width: 90%;
         margin: auto;
-        font-size: 200%;
-        font-family: sans-serif;
+        font-size: 250%;
+    }
+    h1 {
+        font-size: 250%;
     }
     input {
         width: 50%;
