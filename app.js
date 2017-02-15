@@ -204,25 +204,7 @@ var Split = React.createClass({
         }
         else if (this.state.status === "total") {
             return this.props.people[index].total
-            // console.log("total")
-            // var sum = 0.0;
-            // for (var itemName in this.props.items) {
-            //     if (this.props.items.hasOwnProperty(itemName)) {
-            //         if (this.props.items[itemName].people.indexOf(name) >= 0) {
-            //             var itemPrice = this.props.items[itemName].price
-            //             var numPeople = this.props.items[itemName].people.length
-            //             var perItemPrice = parseFloat(itemPrice/numPeople)
-            //             sum += perItemPrice
-            //         }
-            //     }
-            // }
-            // var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
-            // sum = (sum * tip) + (sum * 0.0875)
-            // var total = sum.toFixed(2)
-            // this.props.updatePersonTotal(name, total)
-            // return total
         }
-        
     },
     personItem: function(person, itemName) {
         if (this.props.items[itemName].people.indexOf(person) >= 0) {
@@ -299,7 +281,7 @@ var App = React.createClass({
                     <h3>Things on the Bill</h3>
                     <ItemList items={ this.state.items } itemsDone={ this.finish }/>
                     <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
-                    <button type="button" ref="done-button" onClick={ this.done }>Done with Items</button>
+                    <button type="button" ref="done-button" onClick={ this.doneWithItems }>Done with Items</button>
                 </section>
             )
         }
@@ -315,40 +297,6 @@ var App = React.createClass({
         var person = { "name": name, "subtotal": 0, "total": 0 }
         this.setState({
             people: this.state.people.concat(person),
-            items: this.state.items,
-            status: this.state.status,
-            selectedPeople: this.state.selectedPeople
-        })
-    },
-    updateSubtotal: function(personSubtotals) {
-        var oldPeople = this.state.people
-        for (var person in this.state.people) {
-            var newPerson = { "name": person.name, "subtotal": personSubtotals[person.name], "total": person.total }
-            oldPeople[person.name] = newPerson
-        }
-        // console.log("Update subtotal for " + name + " to " + subtotal)
-        // var index = this.state.people.findIndex(person => person.name == name)
-        // var oldPerson = this.state.people[index]
-        // var oldPeople = this.state.people
-        // var newPerson = { "name": name, "subtotal": subtotal, "total": oldPerson.total }
-        // oldPeople[index] = newPerson 
-        this.setState({
-            people: oldPeople,
-            items: this.state.items,
-            status: this.state.status,
-            selectedPeople: this.state.selectedPeople
-        })
-        //console.log(this.state.people)
-    },
-    updateTotal: function(personTotals) {
-        console.log("Update subtotal for " + name + " to " + total)
-        var index = this.state.people.findIndex(person => person.name == name)
-        var oldPerson = this.state.people[index]
-        var oldPeople = this.state.people
-        var newPerson = { "name": name, "subtotal": oldPerson.subtotal, "total": total }
-        oldPeople[index] = newPerson 
-        this.setState({
-            people: oldPeople,
             items: this.state.items,
             status: this.state.status,
             selectedPeople: this.state.selectedPeople
@@ -379,7 +327,7 @@ var App = React.createClass({
             status: this.state.status,
             selectedPeople: []
         })
-        console.log(updatedItems)
+        //console.log(updatedItems)
     },
     switchToItems: function() {
         this.setState({
@@ -391,7 +339,6 @@ var App = React.createClass({
     },
     togglePerson: function(name) {
         if (this.state.selectedPeople.indexOf(name) > -1) {
-            console.log("Found and unchecking: " + name)
             this.setState({
                 people: this.state.people,
                 items: this.state.items,
@@ -403,7 +350,6 @@ var App = React.createClass({
             })
         }
         else if (this.state.selectedPeople.indexOf(name) == -1 ) {
-            console.log("Not found and checking: " + name)
             this.setState({
                 people: this.state.people,
                 items: this.state.items,
@@ -412,27 +358,27 @@ var App = React.createClass({
             })
         }
     },
-    done: function(event) {
+    doneWithItems: function(event) {
+        console.log("Done with items")
         var personSubtotals = {}
         var personTotals = {}
-        
-        for (var person in this.state.people) {
+
+        for (var personIndex in this.state.people) {
+            var person = this.state.people[personIndex]
             var sum = 0.0;
-            for (var i = 0; i < this.state.items.length; i++) {
-                var item = this.state.items[i]
-                console.log(i + " itemName: " + item)
+            for (var item in this.state.items) {
                 if (this.state.items.hasOwnProperty(item)) {
-                    console.log("does have own prop")
-                    if (this.state.items[i].people.indexOf(name) >= 0) {
-                        var itemPrice = this.state.items[i].price
-                        var numPeople = this.state.items[i].people.length
+                    if (this.state.items[item].people.indexOf(person.name) >= 0) {
+                        //console.log("adding to sum for item " + item + " for person " + person.name)
+                        var itemPrice = this.state.items[item].price
+                        var numPeople = this.state.items[item].people.length
                         var perItemPrice = parseFloat(itemPrice/numPeople)
                         sum += perItemPrice
                     }
                 }
             }
             var subtotal = sum.toFixed(2)
-            personSubtotals[person] = subtotal
+            personSubtotals[person.name] = subtotal
 
             // update total
             var totalSum = 0.0;
@@ -452,15 +398,22 @@ var App = React.createClass({
             var total = totalSum.toFixed(2)
             personTotals[person.name] = total
         }
+        /* end for loop */
+
+        console.log(personSubtotals)
+        console.log(personTotals)
 
         var oldPeople = this.state.people
-        for (var person in this.state.people) {
+        for (var personIndex in this.state.people) {
+            var person = this.state.people[personIndex]
             var newPerson = { "name": person.name, "subtotal": personSubtotals[person.name], "total": personTotals[person.name] }
-            oldPeople[person.name] = newPerson
+            oldPeople[personIndex] = newPerson
         }
 
+        console.log(oldPeople)
+
         this.setState({
-            people: this.state.people,
+            people: oldPeople,
             items: this.state.items,
             status: "done",
             selectedPeople: this.state.selectedPeople
