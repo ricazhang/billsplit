@@ -192,17 +192,12 @@ var PersonList = React.createClass({
 })
 
 var Split = React.createClass({
-    getInitialState: function() {
-        return {
-            status: "subtotal",
-        }
-    },
     personOwes: function(name) {
         var index = this.props.people.findIndex(person => person.name == name)
-        if (this.state.status === "subtotal") {
+        if (this.props.status === "subtotal") {
             return this.props.people[index].subtotal
         }
-        else if (this.state.status === "total") {
+        else if (this.props.status === "total") {
             return this.props.people[index].total
         }
     },
@@ -225,14 +220,12 @@ var Split = React.createClass({
         }
     },
     applyTaxTip: function() {
-        this.setState({
-            status: "total"
-        })
-        this.refs.applyTaxTipButton.disabled = true
+        var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
+        this.props.calculateTotals(tip)
     },
     renderPerson: function(person) {
         return (
-            <li>{ person.name }'s { this.state.status } is ${ this.personOwes(person.name) } 
+            <li>{ person.name }'s { this.props.status } is ${ this.personOwes(person.name) } 
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person.name, item) ) }</ul>
             </li>
         )
@@ -241,7 +234,7 @@ var Split = React.createClass({
         // call render person
         return (
             <div>
-                <p>Here is the split { this.state.status }!</p>
+                <p>Here is the split { this.props.status }!</p>
                 <label>Enter ZIP Code for to Calculate Tax Rate (only SF currently supported): </label>
                 <input type="tel" value="94103"/>
                 Tip <input type="tel" ref="tip"  onBlur={ this.applyTaxTip }/>%
@@ -285,10 +278,10 @@ var App = React.createClass({
                 </section>
             )
         }
-        else if (this.state.status === "done") {
+        else if (this.state.status === "subtotal" || this.state.status === "total") {
             return (
                 <section>
-                    <Split people={ this.state.people } items={ this.state.items } />
+                    <Split people={ this.state.people } items={ this.state.items } calculateTotals={ this.calculateTotals } status={ this.state.status }/>
                 </section>
             )
         }
@@ -358,10 +351,45 @@ var App = React.createClass({
             })
         }
     },
+    calculateTotals: function(tip) {
+        var personTotals = {}
+
+        for (var personIndex in this.state.people) {
+            var person = this.state.people[personIndex]
+            var totalSum = 0.0;
+            for (var itemName in this.state.items) {
+                if (this.state.items.hasOwnProperty(itemName)) {
+                    if (this.state.items[itemName].people.indexOf(person.name) >= 0) {
+                        var itemPrice = this.state.items[itemName].price
+                        var numPeople = this.state.items[itemName].people.length
+                        var perItemPrice = parseFloat(itemPrice/numPeople)
+                        totalSum += perItemPrice
+                    }
+                }
+            }
+            totalSum = (totalSum * tip) + (totalSum * 0.0875)
+            var total = totalSum.toFixed(2)
+            personTotals[person.name] = total
+        }
+        /* end for loop */
+
+        var oldPeople = this.state.people
+        for (var personIndex in this.state.people) {
+            var person = this.state.people[personIndex]
+            var newPerson = { "name": person.name, "subtotal": person.subtotal, "total": personTotals[person.name] }
+            oldPeople[personIndex] = newPerson
+        }
+
+        this.setState({
+            people: oldPeople,
+            items: this.state.items,
+            status: "total",
+            selectedPeople: this.state.selectedPeople
+        })
+    },
     doneWithItems: function(event) {
         console.log("Done with items")
         var personSubtotals = {}
-        var personTotals = {}
 
         for (var personIndex in this.state.people) {
             var person = this.state.people[personIndex]
@@ -379,43 +407,20 @@ var App = React.createClass({
             }
             var subtotal = sum.toFixed(2)
             personSubtotals[person.name] = subtotal
-
-            // update total
-            var totalSum = 0.0;
-            for (var itemName in this.state.items) {
-                if (this.state.items.hasOwnProperty(itemName)) {
-                    if (this.state.items[itemName].people.indexOf(person.name) >= 0) {
-                        var itemPrice = this.state.items[itemName].price
-                        var numPeople = this.state.items[itemName].people.length
-                        var perItemPrice = parseFloat(itemPrice/numPeople)
-                        totalSum += perItemPrice
-                    }
-                }
-            }
-            //var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
-            var tip = 1.15
-            totalSum = (totalSum * tip) + (totalSum * 0.0875)
-            var total = totalSum.toFixed(2)
-            personTotals[person.name] = total
         }
         /* end for loop */
-
-        console.log(personSubtotals)
-        console.log(personTotals)
 
         var oldPeople = this.state.people
         for (var personIndex in this.state.people) {
             var person = this.state.people[personIndex]
-            var newPerson = { "name": person.name, "subtotal": personSubtotals[person.name], "total": personTotals[person.name] }
+            var newPerson = { "name": person.name, "subtotal": personSubtotals[person.name], "total": person.total }
             oldPeople[personIndex] = newPerson
         }
-
-        console.log(oldPeople)
 
         this.setState({
             people: oldPeople,
             items: this.state.items,
-            status: "done",
+            status: "subtotal",
             selectedPeople: this.state.selectedPeople
         })
     }
