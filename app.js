@@ -221,7 +221,8 @@ var Split = React.createClass({
     },
     applyTaxTip: function() {
         var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
-        this.props.calculateTotals(tip)
+        var tax = parseFloat(this.refs.tax.value.trim())
+        this.props.calculateTotals(tip, tax)
     },
     renderPerson: function(person) {
         return (
@@ -235,9 +236,8 @@ var Split = React.createClass({
         return (
             <div>
                 <p>Here is the split { this.props.status }!</p>
-                <label>Enter ZIP Code for to Calculate Tax Rate (only SF currently supported): </label>
-                <input type="tel" value="94103"/>
-                Tip <input type="tel" ref="tip"  onBlur={ this.applyTaxTip }/>%
+                Total Tax and Fees <input type="tel" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip }/>
+                Tip <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip }/>%
                 <ul>{ this.props.people.map(this.renderPerson) }</ul>
                 <button ref="applyTaxTipButton" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
             </div>
@@ -251,21 +251,22 @@ var App = React.createClass({
             people: [],
             items: {},
             status: "people",
-            selectedPeople: []
+            selectedPeople: [],
+            tax: 0.0
         }
     },
     render: function() {
-        if (this.state.status === "items") {
-            return (
-                <section>
-                    <p>Now add the items in the transaction.</p>
-                    <ItemList items={ this.state.items } itemsDone={ this.finish }/>
-                    <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
-                    <button type="button" ref="done-button" onClick={ this.done }>Done with Items</button>
-                </section>
-            )
-        }
-        else if (this.state.status === "people") {
+        // if (this.state.status === "items") {
+        //     return (
+        //         <section>
+        //             <p>Now add the items in the transaction.</p>
+        //             <ItemList items={ this.state.items } itemsDone={ this.finish }/>
+        //             <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
+        //             <button type="button" ref="done-button" onClick={ this.done }>Done with Items</button>
+        //         </section>
+        //     )
+        // }
+        if (this.state.status === "people") {
             return (
                 <section>
                     <h3>People</h3>
@@ -281,6 +282,7 @@ var App = React.createClass({
         else if (this.state.status === "subtotal" || this.state.status === "total") {
             return (
                 <section>
+                    
                     <Split people={ this.state.people } items={ this.state.items } calculateTotals={ this.calculateTotals } status={ this.state.status }/>
                 </section>
             )
@@ -292,7 +294,7 @@ var App = React.createClass({
             people: this.state.people.concat(person),
             items: this.state.items,
             status: this.state.status,
-            selectedPeople: this.state.selectedPeople
+            selectedPeople: this.state.selectedPeople,
         })
     },
     editPerson: function(oldName, newName) {
@@ -351,8 +353,15 @@ var App = React.createClass({
             })
         }
     },
-    calculateTotals: function(tip) {
+    calculateTotals: function(tip, tax) {
         var personTotals = {}
+
+        var subtotal = 0.0;
+        for (var itemName in this.state.items) {
+            if (this.state.items.hasOwnProperty(itemName)) {
+                subtotal += this.state.items[itemName].price
+            }
+        }
 
         for (var personIndex in this.state.people) {
             var person = this.state.people[personIndex]
@@ -367,7 +376,9 @@ var App = React.createClass({
                     }
                 }
             }
-            totalSum = (totalSum * tip) + (totalSum * 0.0875)
+            var percentOfSubtotal = person.subtotal / subtotal
+            var shareOfTax = percentOfSubtotal * tax
+            totalSum = (totalSum * tip) + shareOfTax
             var total = totalSum.toFixed(2)
             personTotals[person.name] = total
         }
