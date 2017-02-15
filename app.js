@@ -194,43 +194,33 @@ var PersonList = React.createClass({
 var Split = React.createClass({
     getInitialState: function() {
         return {
-            status: "subtotal"
+            status: "subtotal",
         }
     },
     personOwes: function(name) {
+        var index = this.props.people.findIndex(person => person.name == name)
         if (this.state.status === "subtotal") {
-            var sum = 0.0;
-            for (var itemName in this.props.items) {
-                if (this.props.items.hasOwnProperty(itemName)) {
-                    if (this.props.items[itemName].people.indexOf(name) >= 0) {
-                        var itemPrice = this.props.items[itemName].price
-                        var numPeople = this.props.items[itemName].people.length
-                        var perItemPrice = parseFloat(itemPrice/numPeople)
-                        sum += perItemPrice
-                    }
-                }
-            }
-            var subtotal = sum.toFixed(2)
-            this.props.updatePersonSubtotal(name, subtotal)
-            return subtotal
+            return this.props.people[index].subtotal
         }
         else if (this.state.status === "total") {
-            var sum = 0.0;
-            for (var itemName in this.props.items) {
-                if (this.props.items.hasOwnProperty(itemName)) {
-                    if (this.props.items[itemName].people.indexOf(name) >= 0) {
-                        var itemPrice = this.props.items[itemName].price
-                        var numPeople = this.props.items[itemName].people.length
-                        var perItemPrice = parseFloat(itemPrice/numPeople)
-                        sum += perItemPrice
-                    }
-                }
-            }
-            var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
-            sum = (sum * tip) + (sum * 0.0875)
-            var total = sum.toFixed(2)
-            this.props.updatePersonTotal(name, total)
-            return total
+            return this.props.people[index].total
+            // console.log("total")
+            // var sum = 0.0;
+            // for (var itemName in this.props.items) {
+            //     if (this.props.items.hasOwnProperty(itemName)) {
+            //         if (this.props.items[itemName].people.indexOf(name) >= 0) {
+            //             var itemPrice = this.props.items[itemName].price
+            //             var numPeople = this.props.items[itemName].people.length
+            //             var perItemPrice = parseFloat(itemPrice/numPeople)
+            //             sum += perItemPrice
+            //         }
+            //     }
+            // }
+            // var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
+            // sum = (sum * tip) + (sum * 0.0875)
+            // var total = sum.toFixed(2)
+            // this.props.updatePersonTotal(name, total)
+            // return total
         }
         
     },
@@ -266,6 +256,7 @@ var Split = React.createClass({
         )
     },
     render: function() {
+        // call render person
         return (
             <div>
                 <p>Here is the split { this.state.status }!</p>
@@ -315,7 +306,7 @@ var App = React.createClass({
         else if (this.state.status === "done") {
             return (
                 <section>
-                    <Split people={ this.state.people } items={ this.state.items } updatePersonSubtotal={ this.updateSubtotal } updatePersonTotal={ this.updateTotal } />
+                    <Split people={ this.state.people } items={ this.state.items } />
                 </section>
             )
         }
@@ -329,21 +320,27 @@ var App = React.createClass({
             selectedPeople: this.state.selectedPeople
         })
     },
-    updateSubtotal: function(name, subtotal) {
-        console.log("Update subtotal for " + name + " to " + subtotal)
-        var index = this.state.people.findIndex(person => person.name == name)
-        var oldPerson = this.state.people[index]
+    updateSubtotal: function(personSubtotals) {
         var oldPeople = this.state.people
-        var newPerson = { "name": name, "subtotal": subtotal, "total": oldPerson.total }
-        oldPeople[index] = newPerson 
+        for (var person in this.state.people) {
+            var newPerson = { "name": person.name, "subtotal": personSubtotals[person.name], "total": person.total }
+            oldPeople[person.name] = newPerson
+        }
+        // console.log("Update subtotal for " + name + " to " + subtotal)
+        // var index = this.state.people.findIndex(person => person.name == name)
+        // var oldPerson = this.state.people[index]
+        // var oldPeople = this.state.people
+        // var newPerson = { "name": name, "subtotal": subtotal, "total": oldPerson.total }
+        // oldPeople[index] = newPerson 
         this.setState({
             people: oldPeople,
             items: this.state.items,
             status: this.state.status,
             selectedPeople: this.state.selectedPeople
         })
+        //console.log(this.state.people)
     },
-    updateTotal: function(name, total) {
+    updateTotal: function(personTotals) {
         console.log("Update subtotal for " + name + " to " + total)
         var index = this.state.people.findIndex(person => person.name == name)
         var oldPerson = this.state.people[index]
@@ -416,7 +413,52 @@ var App = React.createClass({
         }
     },
     done: function(event) {
-        event.preventDefault()
+        var personSubtotals = {}
+        var personTotals = {}
+        
+        for (var person in this.state.people) {
+            var sum = 0.0;
+            for (var i = 0; i < this.state.items.length; i++) {
+                var item = this.state.items[i]
+                console.log(i + " itemName: " + item)
+                if (this.state.items.hasOwnProperty(item)) {
+                    console.log("does have own prop")
+                    if (this.state.items[i].people.indexOf(name) >= 0) {
+                        var itemPrice = this.state.items[i].price
+                        var numPeople = this.state.items[i].people.length
+                        var perItemPrice = parseFloat(itemPrice/numPeople)
+                        sum += perItemPrice
+                    }
+                }
+            }
+            var subtotal = sum.toFixed(2)
+            personSubtotals[person] = subtotal
+
+            // update total
+            var totalSum = 0.0;
+            for (var itemName in this.state.items) {
+                if (this.state.items.hasOwnProperty(itemName)) {
+                    if (this.state.items[itemName].people.indexOf(person.name) >= 0) {
+                        var itemPrice = this.state.items[itemName].price
+                        var numPeople = this.state.items[itemName].people.length
+                        var perItemPrice = parseFloat(itemPrice/numPeople)
+                        totalSum += perItemPrice
+                    }
+                }
+            }
+            //var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
+            var tip = 1.15
+            totalSum = (totalSum * tip) + (totalSum * 0.0875)
+            var total = totalSum.toFixed(2)
+            personTotals[person.name] = total
+        }
+
+        var oldPeople = this.state.people
+        for (var person in this.state.people) {
+            var newPerson = { "name": person.name, "subtotal": personSubtotals[person.name], "total": personTotals[person.name] }
+            oldPeople[person.name] = newPerson
+        }
+
         this.setState({
             people: this.state.people,
             items: this.state.items,
