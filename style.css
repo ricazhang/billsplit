@@ -128,25 +128,31 @@ button:hover {
 /* iPhone  */
 @media only screen and (min-device-width: 320px) and (max-device-width: 414px) {
     html {
-        width: auto; /* matches width to device-width */
-        display: block; /* ensures auto width works */
-        font-size: 16px;
+        font-size: 2.25em;
     }
     body { 
         width: 90%;
         margin: auto;
-        font-size: 250%;
+    }
+    .section {
+        border-width: .1em;
     }
     h1 {
-        font-size: 250%;
+        font-size: 2em;
     }
     input {
-        width: 50%;
-        font-size: 26px;
-        line-height: 36px;
+        font-size: inherit;
+        line-height: 2.25em;
+        border-width: .1em;
+    }
+    input:focus {
+        border-width: .1em;
     }
     button {
-        font-size: 26px;
-        line-height: 36px;
+        font-size: inherit;
+        line-height: 2.25em;
+        padding-left: 1em;
+        padding-right: 1em;
+        border-width: .1em;
     }
 }
