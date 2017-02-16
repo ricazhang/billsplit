@@ -3,13 +3,20 @@ var AddPerson = React.createClass({
         return (
             <div>
                 <input className="left-input" autoFocus type="text" ref="content" onKeyDown={ this.addPerson }/>
-                <button className="right-button">Add Person to List</button>
-                <button onClick={ this.addBlock } className="sub-button">Add Blockity Block</button>
+                <button className="right-button" onClick={ this.addPersonClick }>Add Person to List</button>
+                <button onClick={ this.addBlock } className="sub-button" ref="blockButton">Add Blockity Block</button>
             </div>
         )
     },
     addBlock: function() {
+        this.refs.blockButton.setAttribute("disabled", "disabled");
         this.props.addBlock();
+
+    },
+    addPersonClick: function() {
+        if (this.refs.content.value.trim().length > 0) {
+            this.props.onAdd(this.refs.content.value)
+        }
     },
     addPerson: function(event) {
         // || event.key == ' '
@@ -63,7 +70,7 @@ var AddItem = React.createClass({
                     <p>Split By</p>
                     <button type="button" className="sub-button" onClick={ this.selectEveryone }>Select Everyone</button>
                     <div id="person-checkbox-container">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
-                    <button type="button" onClick={ this.addItem }>Add Item</button>
+                    <button id="add-item-button" type="button" onClick={ this.addItem }>Add Item</button>
                 </div>
             </div>
         )
@@ -270,14 +277,18 @@ var App = React.createClass({
         if (this.state.status === "people") {
             return (
                 <section>
-                    <h3>People</h3>
-                    <AddPerson onAdd={ this.addPerson } addBlock={ this.addBlock }/>
-                    <PersonList editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } peopleDone={ this.switchToItems } />
-                    <h3>Things on the Bill</h3>
-                    <ItemList items={ this.state.items } itemsDone={ this.finish }/>
-                    <AddItem addItem={ this.addItem } selectEveryone={ this.selectAllPeople } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
+                    <div className="section" id="people-section">
+                        <h3>People</h3>
+                        <AddPerson onAdd={ this.addPerson } addBlock={ this.addBlock }/>
+                        <PersonList editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } peopleDone={ this.switchToItems } />
+                    </div>
+                    <div className="section" id="item-section">
+                        <h3>Things on the Bill</h3>
+                        <ItemList items={ this.state.items } itemsDone={ this.finish }/>
+                        <AddItem addItem={ this.addItem } selectEveryone={ this.selectAllPeople } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
+                    </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
-                    <button type="button" ref="done-button" className="accent-button" onClick={ this.doneWithItems }>Done with Items</button>
+                    <button type="button" ref="done-button" className="accent-button" onClick={ this.doneWithItems }>Calculate Split</button>
                 </section>
             )
         }
@@ -290,12 +301,25 @@ var App = React.createClass({
         }
     },
     addPerson: function(name) {
+        var index = this.state.people.findIndex(person => person.name === name)
+        if (index > -1) {
+            var err = "Not adding duplicate person"
+            this.setState({
+                people: this.state.people,
+                items: this.state.items,
+                status: this.state.status,
+                selectedPeople: this.state.selectedPeople,
+                errorMessage: err
+            })
+            return;
+        }
         var person = { "name": name, "subtotal": 0, "total": 0 }
         this.setState({
             people: this.state.people.concat(person),
             items: this.state.items,
             status: this.state.status,
             selectedPeople: this.state.selectedPeople,
+            errorMessage: ""
         })
     },
     addBlock: function() {
