@@ -2,9 +2,13 @@ var AddPerson = React.createClass({
     render: function() {
         return (
             <div>
+                <button onClick={ this.addBlock }>Add Block</button>
                 <input autoFocus type="text" ref="content" onKeyDown={ this.addPerson }/><button>Add Person to List</button>
             </div>
         )
+    },
+    addBlock: function() {
+        this.props.addBlock();
     },
     addPerson: function(event) {
         // || event.key == ' '
@@ -50,11 +54,15 @@ var AddItem = React.createClass({
                 </div>
                 <div>
                     <p>Split By</p>
+                    <button type="button" onClick={ this.selectEveryone }>Select Everyone</button>
                     <ul>{ this.props.people.map( this.renderPersonCheckbox ) }</ul>
                     <button type="button" onClick={ this.addItem }>Add Item</button>
                 </div>
             </div>
         )
+    },
+    selectEveryone: function() {
+        this.props.selectEveryone();
     },
     addItem: function() {
         var priceInput = this.refs.itemPrice.value
@@ -65,7 +73,11 @@ var AddItem = React.createClass({
                 errorMessage: "The item price must be a decimal number"
             })
             return;
-
+        }
+        if (this.refs.itemName.value.length === 0) {
+            this.setState({
+                errorMessage: "The item must have a name."
+            })
         }
         if (price == 0.00) {
             this.setState({
@@ -160,7 +172,6 @@ var PersonList = React.createClass({
             <div>
                 <ol>{ this.props.people.map(this.renderPerson) }</ol>
                 <p className="error-message">{ this.state.errorMessage }</p>
-                <button type="button" ref="done-button" onClick={ this.done }>Go to Add Items</button>
             </div>
         )
     },
@@ -171,23 +182,6 @@ var PersonList = React.createClass({
     },
     deletePerson: function(person) {
         console.log("Deleting: " + person)
-    },
-    done: function(event) {
-        if (this.props.people.length <= 1) {
-            this.setState({
-                errorMessage: "You must add at least two people to this Bill Split."
-            })
-            return;
-        }
-        else {
-            this.setState({
-                errorMessage: ""
-            })
-        }
-        /*
-        event.preventDefault()
-        this.props.peopleDone()
-        */
     }
 })
 
@@ -224,6 +218,9 @@ var Split = React.createClass({
         var tax = parseFloat(this.refs.tax.value.trim())
         this.props.calculateTotals(tip, tax)
     },
+    highlightAllText: function(event) {
+        event.target.select()
+    },
     renderPerson: function(person) {
         return (
             <li>{ person.name }'s { this.props.status } is ${ this.personOwes(person.name) } 
@@ -236,8 +233,8 @@ var Split = React.createClass({
         return (
             <div>
                 <p>Here is the split { this.props.status }!</p>
-                Total Tax and Fees <input type="tel" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip }/>
-                Tip <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip }/>%
+                Total Tax and Fees <input type="tel" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
+                Tip <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>%
                 <ul>{ this.props.people.map(this.renderPerson) }</ul>
                 <button ref="applyTaxTipButton" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
             </div>
@@ -270,11 +267,11 @@ var App = React.createClass({
             return (
                 <section>
                     <h3>People</h3>
-                    <AddPerson onAdd={ this.addPerson } />
+                    <AddPerson onAdd={ this.addPerson } addBlock={ this.addBlock }/>
                     <PersonList editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } peopleDone={ this.switchToItems } />
                     <h3>Things on the Bill</h3>
                     <ItemList items={ this.state.items } itemsDone={ this.finish }/>
-                    <AddItem addItem={ this.addItem } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
+                    <AddItem addItem={ this.addItem } selectEveryone={ this.selectAllPeople } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
                     <button type="button" ref="done-button" onClick={ this.doneWithItems }>Done with Items</button>
                 </section>
             )
@@ -292,6 +289,21 @@ var App = React.createClass({
         var person = { "name": name, "subtotal": 0, "total": 0 }
         this.setState({
             people: this.state.people.concat(person),
+            items: this.state.items,
+            status: this.state.status,
+            selectedPeople: this.state.selectedPeople,
+        })
+    },
+    addBlock: function() {
+        var newPeople = this.state.people
+        var block = ["Carrina", "Nicole", "Rica", "Shaina", "Shangnon", "vovoon"]
+        for (var index in block) {
+            var person = { "name": block[index], "subtotal": 0, "total": 0 }
+            newPeople.push(person)
+        } 
+        console.log(newPeople)
+        this.setState({
+            people: newPeople,
             items: this.state.items,
             status: this.state.status,
             selectedPeople: this.state.selectedPeople,
@@ -330,6 +342,19 @@ var App = React.createClass({
             items: this.state.items,
             status: "items",
             selectedPeople: this.state.selectedPeople
+        })
+    },
+    selectAllPeople: function() {
+        var toSelect = [];
+        for (var personIndex in this.state.people) {
+            toSelect.push(this.state.people[personIndex].name)
+        }
+
+        this.setState({
+            people: this.state.people,
+            items: this.state.items,
+            status: this.state.status,
+            selectedPeople: toSelect
         })
     },
     togglePerson: function(name) {
