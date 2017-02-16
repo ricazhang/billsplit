@@ -130,6 +130,7 @@ button:hover {
     html {
         width: auto; /* matches width to device-width */
         display: block; /* ensures auto width works */
+        font-size: 16px;
     }
     body { 
         width: 90%;
