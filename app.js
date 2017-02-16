@@ -44,6 +44,7 @@ var AddItem = React.createClass({
         if (this.refs.itemPrice.value.indexOf(".") === -1) {
             this.refs.itemPrice.value = this.refs.itemPrice.value + "."
         }
+        ReactDOM.findDOMNode(this.refs.itemPrice).focus(); 
     },
     renderPersonCheckbox: function(person) {
         return (
@@ -68,7 +69,7 @@ var AddItem = React.createClass({
                 </div>
                 <div>
                     <p>Split By</p>
-                    <button type="button" className="sub-button" onClick={ this.selectEveryone }>Select Everyone</button>
+                    <button type="button" className="sub-button" id="select-everyone-button" onClick={ this.selectEveryone }>Select Everyone</button>
                     <div id="person-checkbox-container">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
                     <button id="add-item-button" type="button" onClick={ this.addItem }>Add Item</button>
                 </div>
@@ -238,7 +239,7 @@ var Split = React.createClass({
         if (this.refs.tax.value.indexOf(".") === -1) {
             this.refs.tax.value = this.refs.tax.value + "."
         }
-        
+        ReactDOM.findDOMNode(this.refs.tax).focus(); 
     },
     renderPerson: function(person) {
         return (

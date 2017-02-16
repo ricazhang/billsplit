@@ -156,4 +156,12 @@ button:hover {
         padding-right: 1em;
         border-width: .1em;
     }
+    #select-everyone-button {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+    #add-item-button {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
 }
