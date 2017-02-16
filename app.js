@@ -236,6 +236,7 @@ var Split = React.createClass({
         if (isNaN(tax)) {
             tax = 0;
         }
+        console.log("tip is " + tip + " tax is " + tax)
         this.props.calculateTotals(tip, tax)
     },
     highlightAllText: function(event) {
@@ -423,30 +424,25 @@ var App = React.createClass({
         var subtotal = 0.0;
         for (var itemName in this.state.items) {
             if (this.state.items.hasOwnProperty(itemName)) {
-                subtotal += this.state.items[itemName].price
+                subtotal += parseFloat(this.state.items[itemName].price)
             }
         }
+        console.log("subtotal is: " + subtotal)
 
         for (var personIndex in this.state.people) {
             var person = this.state.people[personIndex]
-            var totalSum = 0.0;
-            for (var itemName in this.state.items) {
-                if (this.state.items.hasOwnProperty(itemName)) {
-                    if (this.state.items[itemName].people.indexOf(person.name) >= 0) {
-                        var itemPrice = this.state.items[itemName].price
-                        var numPeople = this.state.items[itemName].people.length
-                        var perItemPrice = parseFloat(itemPrice/numPeople)
-                        totalSum += perItemPrice
-                    }
-                }
-            }
             var percentOfSubtotal = person.subtotal / subtotal
             var shareOfTax = percentOfSubtotal * tax
-            totalSum = (totalSum * tip) + shareOfTax
+            var totalSum = (person.subtotal * tip) + shareOfTax
             var total = totalSum.toFixed(2)
+            // console.log(person.name + " percent of subtotal " + percentOfSubtotal)
+            // console.log(person.name + " share of tax " + shareOfTax)
+            // console.log(person.name + " total sum " + totalSum)
             personTotals[person.name] = total
         }
         /* end for loop */
+
+        console.log(personTotals)
 
         var oldPeople = this.state.people
         for (var personIndex in this.state.people) {
