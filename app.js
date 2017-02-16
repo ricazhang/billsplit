@@ -253,7 +253,7 @@ var Split = React.createClass({
         return (
             <div>
                 <p>Here is the split { this.props.status }!</p>
-                Total Tax and Fees <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
+                Total Tax and Fees <input type="tel" className="left-input" ref="tax" defaultValue="0" onFocus={ this.highlightAllText }/>
                 <button className="right-button" onClick={ this.appendPeriod }>.</button>
                 Tip <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>%
                 <ul>{ this.props.people.map(this.renderPerson) }</ul>
