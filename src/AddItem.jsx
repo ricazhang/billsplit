@@ -29,7 +29,7 @@ class AddItemComponent extends React.Component {
                     <p>Split By</p>
                     <button type="button" className="sub-button" id="select-everyone-button" onClick={ this.selectEveryone }>Select Everyone</button>
                     <div id="person-checkbox-container">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
-                    <button id="add-item-button" type="button" onClick={ this.addItem }>Add Item</button>
+                    <button id="add-item-button" type="button" onClick={ this.addItem }>Add New Item</button>
                 </div>
             </div>
         )

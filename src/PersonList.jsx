@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {findDOMNode, render} from 'react-dom';
 
 class PersonListComponent extends React.Component {
     constructor(props) {
@@ -21,17 +21,23 @@ class PersonListComponent extends React.Component {
 
     renderPerson = (person) => {
         return (
-            <input value={ person.name } key={person.id} onFocus={ this.startEditingPerson.bind(this, person.id) } onChange={ this.handleChange }/>
+            <div>
+                <input value={ person.name } ref={ person.name } className="iterated-input" key={person.id} onFocus={ this.startEditingPerson.bind(this, person, '') } onChange={ this.handleChange }/>
+                <span className="clickable" onClick={ this.startEditingPerson.bind(this, person, 'editButton') }>Edit</span>
+            </div>
         )
     }
 
-    deletePerson = (person) => {
-        console.log("Deleting: " + person)
-    }
+    startEditingPerson(person, from) {
+        console.log("from: ", from);
+        if (from === 'editButton') {
+            console.log("from edit button")
+            findDOMNode(this.refs[person.name]).focus(); 
+            findDOMNode(this.refs[person.name]).select(); 
+        }
 
-    startEditingPerson(id) {
         this.setState({
-            editingId: id
+            editingId: person.id
         })
     }
 

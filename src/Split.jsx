@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {findDOMNode, render} from 'react-dom';
 
 class SplitComponent extends React.Component {
     constructor(props) {

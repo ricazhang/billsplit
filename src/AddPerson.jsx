@@ -14,8 +14,8 @@ class AddPersonComponent extends React.Component {
         return (
             <div>
                 <input className="left-input" autoFocus type="text" ref="content" onKeyDown={ this.addPerson }/>
-                <button className="right-button" onClick={ this.addPersonClick }>Add Person to List</button>
-                <button onClick={ this.addBlock } className="sub-button" ref="blockButton">Add Blockity Block</button>
+                <button className="right-button" onClick={ this.addPersonClick }>Add</button>
+                <span onClick={ this.addBlock } className="clickable" id="blockButton" ref="blockButton">Sample!</span>
             </div>
         )
     }

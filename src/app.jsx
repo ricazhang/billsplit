@@ -26,21 +26,32 @@ class App extends React.Component {
                     <div className="section" id="people-section">
                         <h3>People</h3>
                         <AddPersonComponent onAdd={ this.addPerson } addBlock={ this.addBlock }/>
-                        <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } people={ this.state.people } peopleDone={ this.switchToItems } />
+                        <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } people={ this.state.people } />
                     </div>
+                    <p className="error-message">{ this.state.errorMessage }</p>
+                    <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
+                </section>
+            )
+        }
+        else if (this.state.status === "items") {
+            return (
+                <section>
+                    <button onClick={ this.switchPage.bind(this, "people") }>&lsaquo; Edit People</button>
                     <div className="section" id="item-section">
                         <h3>Things on the Bill</h3>
                         <ItemListComponent items={ this.state.items }/>
                         <AddItemComponent addItem={ this.addItem } selectEveryone={ this.selectAllPeople } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
-                    <button type="button" ref="done-button" className="accent-button" onClick={ this.doneWithItems }>Calculate Split</button>
+                    <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
                 </section>
             )
         }
         else if (this.state.status === "subtotal" || this.state.status === "total") {
             return (
                 <section>
+                    <button onClick={ this.switchPage.bind(this, "people") }>&laquo; Edit People</button>
+                    <button onClick={ this.switchPage.bind(this, "items") }>&lsaquo; Edit Items</button>
                     <SplitComponent people={ this.state.people } items={ this.state.items } calculateTotals={ this.calculateTotals } status={ this.state.status }/>
                 </section>
             )
@@ -100,12 +111,6 @@ class App extends React.Component {
             items: updatedItems,
             selectedPeople: [],
             errorMessage: ""
-        })
-    }
-
-    switchToItems = () => {
-        this.setState({
-            status: "items",
         })
     }
 
@@ -178,15 +183,33 @@ class App extends React.Component {
         })
     }
 
-    doneWithItems = (event) => {
-        console.log("Done with items")
-        if (Object.keys(this.state.items).length < 1) {
-            this.setState({
-                errorMessage: "You must add at least one item"
-            })
-            return
+    switchPage = (page) => {
+        console.log("switch to ", page);
+        if (page === "items") {
+            if (this.state.people < 1) {
+                this.setState({
+                    errorMessage: "You must add at least one person first"
+                })
+                return;
+            }
         }
-
+        else if (page === "subtotal") {
+            if (Object.keys(this.state.items).length < 1) {
+                this.setState({
+                    errorMessage: "You must add at least one item first"
+                })
+                return;
+            }
+            else {
+                this.doneWithItems();
+            }
+        }
+        console.log("allowed to switch page")
+        this.setState({
+            status: page
+        })
+    }
+    doneWithItems = () => {
         var personSubtotals = {}
 
         for (var personIndex in this.state.people) {
