@@ -5,7 +5,8 @@ class PersonListComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            errorMessage: ""
+            errorMessage: "",
+            editingId: 0
         }
     }
 
@@ -20,7 +21,7 @@ class PersonListComponent extends React.Component {
 
     renderPerson = (person) => {
         return (
-            <input value={ person.name } onChange={ this.editPerson }/>
+            <input value={ person.name } key={person.id} onFocus={ this.startEditingPerson.bind(this, person.id) } onChange={ this.handleChange }/>
         )
     }
 
@@ -28,9 +29,24 @@ class PersonListComponent extends React.Component {
         console.log("Deleting: " + person)
     }
 
-    editPerson = (person) => {
-        console.log("Editing: " + person + " to " + event.srcElement.value)
-        this.props.editPerson(person, event.srcElement.value)
+    startEditingPerson(id) {
+        this.setState({
+            errorMessage: this.state.errorMessage,
+            editingId: id
+        })
+    }
+
+    handleChange = (event) => {
+        console.log("onChange event: ", event.target.value);
+
+        if (event.target.value.trim().length > 0) {
+            console.log("Editing: ", event.target.value, " id ", this.state.editingId);
+            this.props.editPerson(event.target.value, this.state.editingId)
+            this.setState({
+                errorMessage: this.state.errorMessage,
+                editingId: 0
+            })
+        }
     }
 }
 

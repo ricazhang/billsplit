@@ -4,6 +4,10 @@ import {findDOMNode, render} from 'react-dom';
 class AddPersonComponent extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            personIndex: 0
+        }
     }
 
     render() {
@@ -27,7 +31,10 @@ class AddPersonComponent extends React.Component {
         if (event.key == 'Enter') {
             if (this.refs.content.value.trim().length > 0) {
                 event.preventDefault()
-                this.props.onAdd(this.refs.content.value)
+                this.props.onAdd(this.refs.content.value, this.state.personIndex)
+                this.setState({
+                    personIndex: this.state.personIndex + 1
+                })
                 findDOMNode(this.refs.content).value = "";  
                 findDOMNode(this.refs.content).focus();  
             }

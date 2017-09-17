@@ -5,7 +5,8 @@ class AddItemComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            errorMessage: ""
+            errorMessage: "",
+            itemIndex: 0
         }
     }
 
@@ -47,35 +48,44 @@ class AddItemComponent extends React.Component {
 
         if (isNaN(price)) {
             this.setState({
-                errorMessage: "The item price must be a decimal number"
+                errorMessage: "The item price must be a decimal number",
+                itemIndex: this.state.itemIndex
             })
             return;
         }
         if (this.refs.itemName.value.length === 0) {
             this.setState({
-                errorMessage: "The item must have a name."
+                errorMessage: "The item must have a name.",
+                itemIndex: this.state.itemIndex
             })
         }
         if (price == 0.00) {
             this.setState({
-                errorMessage: "The item price cannot be 0."
+                errorMessage: "The item price cannot be 0.",
+                itemIndex: this.state.itemIndex
             })
             return;
         }
         if (this.props.selectedPeople.length < 1) {
             console.log("Num selected: " + this.props.selectedPeople.length)
             this.setState({
-                errorMessage: "You must assign this item to at least one person."
+                errorMessage: "You must assign this item to at least one person.",
+                itemIndex: this.state.itemIndex
             })
             return;
         }
 
         var item = {
             name: this.refs.itemName.value,
+            id: this.state.itemIndex,
             price: price
         }
 
         this.props.addItem(item)
+        this.setState({
+            errorMessage: this.state.errorMessage,
+            itemIndex: this.state.itemIndex + 1
+        })
         findDOMNode(this.refs.itemName).value = "";
         findDOMNode(this.refs.itemPrice).value = "";
         findDOMNode(this.refs.itemName).focus();   

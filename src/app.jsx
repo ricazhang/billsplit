@@ -47,9 +47,9 @@ class App extends React.Component {
         }
     }
 
-    addPerson = (name) => {
-        var index = this.state.people.findIndex(person => person.name === name)
-        if (index > -1) {
+    addPerson = (name, index) => {
+        var personExists = this.state.people.findIndex(person => person.name === name)
+        if (personExists > -1) {
             var err = "Not adding duplicate person"
             this.setState({
                 people: this.state.people,
@@ -60,7 +60,7 @@ class App extends React.Component {
             })
             return;
         }
-        var person = { "name": name, "subtotal": 0, "total": 0 }
+        var person = { "name": name, "id": index, "subtotal": 0, "total": 0 }
         this.setState({
             people: this.state.people.concat(person),
             items: this.state.items,
@@ -86,14 +86,10 @@ class App extends React.Component {
         })
     }
 
-    editPerson = (oldName, newName) => {
-        var person = { "name": newName, "subtotal": 0, "total": 0 }
-        //index = this.state.people.indexOf(oldName)
-        console.log(this.state.people)
-        var index = this.state.people.findIndex(person => person.name === oldName)
-        console.log("Found " + oldName + " at index " + index + ". New people is now")
+    editPerson = (newName, id) => {
         var newPeople = this.state.people
-        newPeople[index] = person
+        console.log("new name: ", newName, " for ", newPeople[id])
+        newPeople[id].name = newName
         console.log(newPeople)
         this.setState({
             people: newPeople,
@@ -111,6 +107,7 @@ class App extends React.Component {
         var updatedItems = this.state.items
         updatedItems[item.name] = {
             price: item.price,
+            id: item.id,
             people: this.state.selectedPeople
         }
         this.setState({
