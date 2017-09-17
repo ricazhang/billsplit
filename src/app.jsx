@@ -50,22 +50,14 @@ class App extends React.Component {
     addPerson = (name, index) => {
         var personExists = this.state.people.findIndex(person => person.name === name)
         if (personExists > -1) {
-            var err = "Not adding duplicate person"
             this.setState({
-                people: this.state.people,
-                items: this.state.items,
-                status: this.state.status,
-                selectedPeople: this.state.selectedPeople,
-                errorMessage: err
+                errorMessage: "Not adding duplicate person"
             })
             return;
         }
         var person = { "name": name, "id": index, "subtotal": 0, "total": 0 }
         this.setState({
             people: this.state.people.concat(person),
-            items: this.state.items,
-            status: this.state.status,
-            selectedPeople: this.state.selectedPeople,
             errorMessage: ""
         })
     }
@@ -74,15 +66,12 @@ class App extends React.Component {
         var newPeople = this.state.people
         var block = ["Carrina", "Nicole", "Rica", "Shaina", "Shangnon", "vovoon"]
         for (var index in block) {
-            var person = { "name": block[index], "subtotal": 0, "total": 0 }
+            var person = { "name": block[index], "id": index, "subtotal": 0, "total": 0 }
             newPeople.push(person)
         } 
         console.log(newPeople)
         this.setState({
             people: newPeople,
-            items: this.state.items,
-            status: this.state.status,
-            selectedPeople: this.state.selectedPeople,
         })
     }
 
@@ -93,9 +82,6 @@ class App extends React.Component {
         console.log(newPeople)
         this.setState({
             people: newPeople,
-            items: this.state.items,
-            status: this.state.status,
-            selectedPeople: this.state.selectedPeople
         })
     }
 
@@ -111,34 +97,28 @@ class App extends React.Component {
             people: this.state.selectedPeople
         }
         this.setState({
-            people: this.state.people,
             items: updatedItems,
-            status: this.state.status,
             selectedPeople: [],
             errorMessage: ""
         })
-        //console.log(updatedItems)
     }
 
     switchToItems = () => {
         this.setState({
-            people: this.state.people,
-            items: this.state.items,
             status: "items",
-            selectedPeople: this.state.selectedPeople
         })
     }
 
-    selectAllPeople = () => {
+    selectAllPeople = (all) => {
         var toSelect = [];
-        for (var personIndex in this.state.people) {
-            toSelect.push(this.state.people[personIndex].name)
+
+        if (all) {
+            for (var personIndex in this.state.people) {
+                toSelect.push(this.state.people[personIndex].name)
+            }
         }
 
         this.setState({
-            people: this.state.people,
-            items: this.state.items,
-            status: this.state.status,
             selectedPeople: toSelect
         })
     }
@@ -146,9 +126,6 @@ class App extends React.Component {
     togglePerson = (name) => {
         if (this.state.selectedPeople.indexOf(name) > -1) {
             this.setState({
-                people: this.state.people,
-                items: this.state.items,
-                status: this.state.status,
                 selectedPeople: this.state.selectedPeople.filter(function(existingName) {
                     // remove existingName from list of selectedPeople
                     return existingName !== name
@@ -157,9 +134,6 @@ class App extends React.Component {
         }
         else if (this.state.selectedPeople.indexOf(name) == -1 ) {
             this.setState({
-                people: this.state.people,
-                items: this.state.items,
-                status: this.state.status,
                 selectedPeople: this.state.selectedPeople.concat(name)
             })
         }
@@ -200,22 +174,15 @@ class App extends React.Component {
 
         this.setState({
             people: oldPeople,
-            items: this.state.items,
             status: "total",
-            selectedPeople: this.state.selectedPeople
         })
     }
 
     doneWithItems = (event) => {
         console.log("Done with items")
         if (Object.keys(this.state.items).length < 1) {
-            var err = "You must add at least one item"
             this.setState({
-                people: this.state.people,
-                items: this.state.items,
-                status: this.state.status,
-                selectedPeople: this.state.selectedPeople,
-                errorMessage: err
+                errorMessage: "You must add at least one item"
             })
             return
         }
@@ -250,9 +217,7 @@ class App extends React.Component {
 
         this.setState({
             people: oldPeople,
-            items: this.state.items,
             status: "subtotal",
-            selectedPeople: this.state.selectedPeople
         })
     }
 

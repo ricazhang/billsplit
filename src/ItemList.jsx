@@ -17,7 +17,7 @@ class ItemListComponent extends React.Component {
         var itemPeople = this.props.items[item].people;
         var pricePerPerson = parseFloat(itemPrice/itemPeople.length).toFixed(2);
         return (
-            <li id={item} content={item}>
+            <li id={item} key={item.id} content={item}>
                 { item } for ${ itemPrice } <strong>split by</strong> { this.prettyArray(itemPeople) } (for ${ pricePerPerson } per person)
             </li>
         )

@@ -31,7 +31,6 @@ class PersonListComponent extends React.Component {
 
     startEditingPerson(id) {
         this.setState({
-            errorMessage: this.state.errorMessage,
             editingId: id
         })
     }
@@ -43,7 +42,6 @@ class PersonListComponent extends React.Component {
             console.log("Editing: ", event.target.value, " id ", this.state.editingId);
             this.props.editPerson(event.target.value, this.state.editingId)
             this.setState({
-                errorMessage: this.state.errorMessage,
                 editingId: 0
             })
         }

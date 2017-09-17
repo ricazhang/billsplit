@@ -6,7 +6,9 @@ class AddItemComponent extends React.Component {
         super(props)
         this.state = {
             errorMessage: "",
-            itemIndex: 0
+            itemIndex: 0,
+            selectAll: true,
+            selectText: 'Select Everyone'
         }
     }
 
@@ -49,20 +51,17 @@ class AddItemComponent extends React.Component {
         if (isNaN(price)) {
             this.setState({
                 errorMessage: "The item price must be a decimal number",
-                itemIndex: this.state.itemIndex
             })
             return;
         }
         if (this.refs.itemName.value.length === 0) {
             this.setState({
                 errorMessage: "The item must have a name.",
-                itemIndex: this.state.itemIndex
             })
         }
         if (price == 0.00) {
             this.setState({
                 errorMessage: "The item price cannot be 0.",
-                itemIndex: this.state.itemIndex
             })
             return;
         }
@@ -70,11 +69,9 @@ class AddItemComponent extends React.Component {
             console.log("Num selected: " + this.props.selectedPeople.length)
             this.setState({
                 errorMessage: "You must assign this item to at least one person.",
-                itemIndex: this.state.itemIndex
             })
             return;
         }
-
         var item = {
             name: this.refs.itemName.value,
             id: this.state.itemIndex,
@@ -83,15 +80,12 @@ class AddItemComponent extends React.Component {
 
         this.props.addItem(item)
         this.setState({
-            errorMessage: this.state.errorMessage,
-            itemIndex: this.state.itemIndex + 1
+            itemIndex: this.state.itemIndex + 1,
+            errorMessage: "",
         })
         findDOMNode(this.refs.itemName).value = "";
         findDOMNode(this.refs.itemPrice).value = "";
         findDOMNode(this.refs.itemName).focus();   
-        this.setState({
-            errorMessage: ""
-        }) 
     } 
 
     appendPeriod = () => {
@@ -102,7 +96,20 @@ class AddItemComponent extends React.Component {
     }  
 
     selectEveryone = () => {
-        this.props.selectEveryone();
+        if (this.state.selectAll) {
+            this.props.selectEveryone(true);
+            this.setState({
+                selectAll: false,
+                selectEveryone: 'Deselect Everyone'
+            })
+        }
+        else {
+            this.props.selectEveryone(false);
+            this.setState({
+                selectAll: true,
+                selectEveryone: 'Select Everyone'
+            })
+        }
     }
     
     // this method is bound in the render
