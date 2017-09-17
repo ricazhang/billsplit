@@ -88,6 +88,10 @@ input:focus {
     cursor: pointer;
 }
 
+#select-everyone-button {
+    margin-bottom: 1em;
+}
+
 #blockButton {
     margin-left: 10px;
 }
@@ -123,6 +127,17 @@ button:hover {
 .sub-button {
     background-color: #dfe2d2;
     border-color: #dfe2d2;
+}
+
+.responsive-inline-input-container {
+    margin-bottom: 5px;
+}
+
+.responsive-inline-input-container > label {
+    width: 150px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 10px;
 }
 
 .person-checkbox-container {
@@ -170,6 +185,26 @@ button:hover {
     font-weight: bold;
 }
 
+.responsive-inline-input-container > .tip-units-checkbox {
+    display: none;
+}
+.responsive-inline-input-container > .tip-units-checkbox-label {
+    display: inline-block;
+    text-align: center;
+    border: 2px solid #dbd4ff;
+    background-color: white;
+    width: auto !important;
+    margin-right: 0px !important;
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 24px;
+}
+
+.responsive-inline-input-container > .tip-units-checkbox:checked + .tip-units-checkbox-label {
+    background-color: #dbd4ff;
+    font-weight: bold;
+}
+
 #add-item-button {
     clear: both;
 }
@@ -183,6 +218,9 @@ button:hover {
 .person-split-container ul {
     margin-top: 5px;
 } 
+.remove-item {
+    margin-left: 5px;
+}
 
 
 /* mobile */
@@ -228,11 +266,17 @@ button:hover {
         margin-top: 1em;
         margin-bottom: 1em;
     }
+    .person-checkbox-container {
+        text-align: center;
+    }
     .person-checkbox-line {
         margin-bottom: 15px;
         margin-right: 15px;
         width: 300px;
         height: 150px;
+    }
+    .remove-item {
+        margin-left: 15px;
     }
     .breakdown-container {
         margin-top: 15px;
@@ -260,5 +304,11 @@ button:hover {
         width: calc(40% - 10px);
         text-align: right;
         margin-right: 15px;
+    }
+    .responsive-inline-input-container > .tip-units-checkbox-label {
+        height: 2.25em;
+        line-height: 2.25em;
+        padding-right: 10px;
+        padding-left: 10px;
     }
 }

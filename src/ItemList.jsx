@@ -11,14 +11,16 @@ class ItemListComponent extends React.Component {
         )
     }
 
-    renderItem = (item) => { 
+    renderItem = (itemName) => { 
         //var perPersonPrice = parseFloat(this.props.items[item].price)
-        var itemPrice = this.props.items[item].price;
-        var itemPeople = this.props.items[item].people;
+        var itemPrice = this.props.items[itemName].price;
+        var itemPeople = this.props.items[itemName].people;
+        var itemId = this.props.items[itemName].id;
         var pricePerPerson = parseFloat(itemPrice/itemPeople.length).toFixed(2);
         return (
-            <li id={item} key={item.id} content={item}>
-                { item } for ${ itemPrice } <strong>split by</strong> { this.prettyArray(itemPeople) } (for ${ pricePerPerson } per person)
+            <li id={itemName} key={itemId} content={itemName}>
+                { itemName } for ${ itemPrice } <strong>split by</strong> { this.prettyArray(itemPeople) } (${ pricePerPerson } per person)
+                <span className="clickable remove-item" onClick={this.removeItem.bind(this, itemName)}>Remove Item</span>
             </li>
         )
     }
@@ -45,6 +47,11 @@ class ItemListComponent extends React.Component {
             }
         }
         return str
+    }
+
+    removeItem(itemName) {
+        console.log("removing item: ", itemName);
+        this.props.removeItem(itemName);
     }
 }
 

@@ -4,6 +4,10 @@ import {findDOMNode, render} from 'react-dom';
 class SplitComponent extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            tipUnits: "%"
+        }
     }
 
     render() {
@@ -19,7 +23,11 @@ class SplitComponent extends React.Component {
                 <div className="responsive-inline-input-container">
                     <label>Tip</label>
                     <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
-                    <div style={{display: 'inline-block'}}>%</div>
+
+                    <input type="checkbox" className="tip-units-checkbox" name="tip-percent" checked={this.state.tipUnits === '%'}/>
+                    <label htmlFor="tip-percent" className="tip-units-checkbox-label" onClick={ this.setTipUnits.bind(this, '%') }>%</label>
+                    <input type="checkbox" className="tip-units-checkbox" name="tip-dollars"  checked={this.state.tipUnits === '$'}/>
+                    <label htmlFor="tip-dollars" className="tip-units-checkbox-label" onClick={ this.setTipUnits.bind(this, '$') }>$</label>
                 </div>
                 <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
                 <button ref="applyTaxTipButton" className="accent-button" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
@@ -33,6 +41,12 @@ class SplitComponent extends React.Component {
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person.name, item) ) }</ul>
             </div>
         )
+    }
+
+    setTipUnits(unit) {
+        this.setState({
+            tipUnits: unit
+        })
     }
 
     personOwes = (name) => {

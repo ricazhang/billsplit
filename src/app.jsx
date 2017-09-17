@@ -39,8 +39,8 @@ class App extends React.Component {
                 <section>
                     <button onClick={ this.switchPage.bind(this, "people") }>&lsaquo; Edit People</button>
                     <div className="section" id="item-section">
-                        <h3>Things on the Bill</h3>
-                        <ItemListComponent items={ this.state.items }/>
+                        <h3>Items on the Bill ({Object.keys(this.state.items).length})</h3>
+                        <ItemListComponent items={ this.state.items } removeItem={this.removeItem}/>
                         <AddItemComponent addItem={ this.addItem } selectEveryone={ this.selectAllPeople } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
@@ -148,6 +148,18 @@ class App extends React.Component {
         else if (this.state.selectedPeople.indexOf(name) == -1 ) {
             this.setState({
                 selectedPeople: this.state.selectedPeople.concat(name)
+            })
+        }
+    }
+
+    removeItem = (itemName) => {
+        console.log("removing: ", itemName);
+        if (itemName) {
+            var newItems = this.state.items;
+            delete newItems[itemName];
+            console.log(newItems)
+            this.setState({
+                items: newItems
             })
         }
     }
