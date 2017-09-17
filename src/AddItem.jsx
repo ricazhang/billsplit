@@ -16,11 +16,11 @@ class AddItemComponent extends React.Component {
         return (
             <div>
                 <p className="error-message">{ this.state.errorMessage }</p>
-                <div className="input-label-line">
+                <div className="input-label-line responsive-inline-input-container">
                     <label htmlFor="itemName">Item Name: </label>
                     <input type="text" ref="itemName" name="itemName"/>
                 </div>
-                <div className="input-label-line">
+                <div className="input-label-line responsive-inline-input-container">
                     <label htmlFor="itemPrice">Item Price: $</label>
                     <input type="tel" ref="itemPrice" name="itemPrice" className="left-input" onKeyDown={ this.splitItem }/>
                     <button className="right-button" onClick={ this.appendPeriod }>.</button>

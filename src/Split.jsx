@@ -11,15 +11,15 @@ class SplitComponent extends React.Component {
         return (
             <div>
                 <div>Here is the split { this.props.status }!</div>
-                <div className="total-page-input-container">
-                    <label className="total-page-label">Taxes and Fees</label>
+                <div className="responsive-inline-input-container">
+                    <label>Taxes and Fees</label>
                     <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
                     <button className="right-button" onClick={ this.appendPeriod }>.</button>
                 </div>
-                <div className="total-page-input-container">
-                    <label className="total-page-label">Tip</label>
+                <div className="responsive-inline-input-container">
+                    <label>Tip</label>
                     <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
-                    <div className="total-page-inline">%</div>
+                    <div style={{display: 'inline-block'}}>%</div>
                 </div>
                 <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
                 <button ref="applyTaxTipButton" className="accent-button" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>

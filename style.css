@@ -161,12 +161,12 @@ button:hover {
     text-align: center; 
     height: 100%;
     line-height: 30px;
-    border: 2px solid #f2ad9f;
+    border: 2px solid #dbd4ff;
     background-color: white;
 }
 
 .person-checkbox:checked + .person-checkbox-label {
-    background-color: #f2ad9f;
+    background-color: #dbd4ff;
     font-weight: bold;
 }
 
@@ -243,25 +243,22 @@ button:hover {
     .person-split-container {
         margin-bottom: 15px;
     } 
-    .total-page-inline {
-        display: inline-block;
-    }
-    .total-page-label {
-        display: inline-block;
-        width: calc(40% - 10px);
-        text-align: right;
-        margin-right: 15px;
-    }
-    .total-page-input-container {
+    .responsive-inline-input-container {
         display: inline-block;
         width: 100%;
         margin-bottom: 15px;
     }
-    .total-page-input-container > input{
+    .responsive-inline-input-container > input{
         display: inline-block;
         width: 40%;
     }
-    .total-page-input-container > button {
+    .responsive-inline-input-container > button {
         display: inline-block;
+    }
+    .responsive-inline-input-container > label {
+        display: inline-block;
+        width: calc(40% - 10px);
+        text-align: right;
+        margin-right: 15px;
     }
 }
