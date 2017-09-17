@@ -10,21 +10,28 @@ class SplitComponent extends React.Component {
         // call render person
         return (
             <div>
-                <p>Here is the split { this.props.status }!</p>
-                Total Tax and Fees <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
-                <button className="right-button" onClick={ this.appendPeriod }>.</button>
-                Tip <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>%
-                <ul>{ this.props.people.map(this.renderPerson) }</ul>
-                <button ref="applyTaxTipButton" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
+                <div>Here is the split { this.props.status }!</div>
+                <div className="total-page-input-container">
+                    <label className="total-page-label">Taxes and Fees</label>
+                    <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
+                    <button className="right-button" onClick={ this.appendPeriod }>.</button>
+                </div>
+                <div className="total-page-input-container">
+                    <label className="total-page-label">Tip</label>
+                    <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
+                    <div className="total-page-inline">%</div>
+                </div>
+                <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
+                <button ref="applyTaxTipButton" className="accent-button" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
             </div>
         )
     }
 
     renderPerson = (person) => {
         return (
-            <li>{ person.name }'s { this.props.status } is ${ this.personOwes(person.name) } 
+            <div className="person-split-container">{ person.name } owes ${ this.personOwes(person.name) } 
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person.name, item) ) }</ul>
-            </li>
+            </div>
         )
     }
 
