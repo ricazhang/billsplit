@@ -1,0 +1,31 @@
+{
+  "name": "billsplit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.jsx",
+  "scripts": {
+    "dev": "webpack -d --watch",
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ricazhang/billsplit.git"
+  },
+  "author": "ricazhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ricazhang/billsplit/issues"
+  },
+  "homepage": "https://github.com/ricazhang/billsplit#readme",
+  "dependencies": {
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "webpack": "^3.6.0"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1"
+  }
+}
