@@ -12,6 +12,7 @@ class App extends React.Component {
         this.state = {
             people: [],
             items: {},
+            addedBlock: false,
             status: "people",
             selectedPeople: [],
             tax: 0.0,
@@ -74,6 +75,13 @@ class App extends React.Component {
     }
 
     addBlock = () => {
+        if (this.state.addedBlock) {
+            return
+        } else {
+           this.setState({
+               addedBlock: true
+           })
+        }
         var newPeople = this.state.people
         var block = ["Carrina", "Nicole", "Rica", "Shaina", "Shangnon", "vovoon"]
         for (var index in block) {

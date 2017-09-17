@@ -10,7 +10,7 @@ class SplitComponent extends React.Component {
         // call render person
         return (
             <div>
-                <div>Here is the split { this.props.status }!</div>
+                <div style={{marginTop: '15px', marginBottom: '15px'}}>Here is the split { this.props.status }!</div>
                 <div className="responsive-inline-input-container">
                     <label>Taxes and Fees</label>
                     <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
@@ -52,11 +52,11 @@ class SplitComponent extends React.Component {
             var perItemPrice = parseFloat(itemPrice/numPeople).toFixed(2)
             if (numPeople == 1) {
                 return (
-                    <li>{ itemName }, is ${ perItemPrice }</li>
+                    <li>{ itemName } is ${ perItemPrice }</li>
                 )
             }
             return (
-                <li>{ itemName } for ${ perItemPrice } per person</li>
+                <li>{ itemName } is ${ perItemPrice } per person</li>
             )
         }
         else {

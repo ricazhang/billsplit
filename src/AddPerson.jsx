@@ -21,9 +21,7 @@ class AddPersonComponent extends React.Component {
     }
 
     addBlock = () => {
-        this.refs.blockButton.setAttribute("disabled", "disabled");
         this.props.addBlock();
-
     }
 
     addPerson = (event) => {
