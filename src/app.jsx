@@ -31,6 +31,7 @@ class App extends React.Component {
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
                     <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
+                    <div className="vertical-space"></div>
                 </section>
             )
         }
@@ -45,6 +46,7 @@ class App extends React.Component {
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
                     <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
+                    <div className="vertical-space"></div>
                 </section>
             )
         }
@@ -54,6 +56,7 @@ class App extends React.Component {
                     <button onClick={ this.switchPage.bind(this, "people") }>&laquo; Edit People</button>
                     <button onClick={ this.switchPage.bind(this, "items") }>&lsaquo; Edit Items</button>
                     <SplitComponent people={ this.state.people } items={ this.state.items } calculateTotals={ this.calculateTotals } status={ this.state.status }/>
+                    <div className="vertical-space"></div>
                 </section>
             )
         }

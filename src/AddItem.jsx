@@ -27,7 +27,7 @@ class AddItemComponent extends React.Component {
                 </div>
                 <div>
                     <p>Split By</p>
-                    <div type="button" className="clickable" id="select-everyone-button" onClick={ this.selectEveryone }>Select Everyone</div>
+                    <div type="button" className="clickable" id="select-everyone-button" onClick={ this.selectEveryone }>{ this.state.selectText }</div>
                     <div id="person-checkbox-container">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
                     <button id="add-item-button" type="button" onClick={ this.addItem }>Add Item</button>
                 </div>
@@ -100,14 +100,14 @@ class AddItemComponent extends React.Component {
             this.props.selectEveryone(true);
             this.setState({
                 selectAll: false,
-                selectEveryone: 'Deselect Everyone'
+                selectText: 'Deselect Everyone'
             })
         }
         else {
             this.props.selectEveryone(false);
             this.setState({
                 selectAll: true,
-                selectEveryone: 'Select Everyone'
+                selectText: 'Select Everyone'
             })
         }
     }
