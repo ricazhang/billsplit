@@ -29,8 +29,10 @@ class SplitComponent extends React.Component {
                     <input type="checkbox" className="tip-units-checkbox" name="tip-dollars"  checked={this.state.tipUnits === '$'}/>
                     <label htmlFor="tip-dollars" className="tip-units-checkbox-label" onClick={ this.setTipUnits.bind(this, '$') }>$</label>
                 </div>
-                <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
                 <button ref="applyTaxTipButton" className="accent-button" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
+                <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
+
+                <div class="section-label">Bill Total: </div>
             </div>
         )
     }
@@ -47,12 +49,13 @@ class SplitComponent extends React.Component {
         this.setState({
             tipUnits: unit
         })
+        this.applyTaxTip()
     }
 
     personOwes = (name) => {
         var index = this.props.people.findIndex(person => person.name == name)
         if (this.props.status === "subtotal") {
-            return this.props.people[index].subtotal
+            return this.props.people[index].subtotal.toFixed(2)
         }
         else if (this.props.status === "total") {
             return this.props.people[index].total
@@ -79,7 +82,13 @@ class SplitComponent extends React.Component {
     }
 
     applyTaxTip = () => {
-        var tip = (parseFloat(this.refs.tip.value.trim()) / 100) + 1
+        if (this.state.tipUnits === '%') {
+            var tip = (parseFloat(this.refs.tip.value.trim()) / 100)
+        }
+        else if (this.state.tipUnits === '$') {
+            var tip = parseFloat(this.refs.tip.value.trim())
+        }
+
         if (isNaN(tip)) {
             tip = 0;
         }
@@ -87,8 +96,9 @@ class SplitComponent extends React.Component {
         if (isNaN(tax)) {
             tax = 0;
         }
-        console.log("tip is " + tip + " tax is " + tax)
-        this.props.calculateTotals(tip, tax)
+
+        console.log("tip is " , tip + " tax is " , tax)
+        this.props.calculateTotals(tip, tax, this.state.tipUnits)
     }
 
     highlightAllText = (event) => {

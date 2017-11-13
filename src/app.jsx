@@ -167,7 +167,7 @@ class App extends React.Component {
         }
     }
 
-    calculateTotals = (tip, tax) => {
+    calculateTotals = (tip, tax, tipUnits) => {
         var personTotals = {}
 
         var subtotal = 0.0;
@@ -182,7 +182,13 @@ class App extends React.Component {
             var person = this.state.people[personIndex]
             var percentOfSubtotal = person.subtotal / subtotal
             var shareOfTax = percentOfSubtotal * tax
-            var totalSum = (person.subtotal * tip) + shareOfTax
+            var totalSum = 0.0
+            if (tipUnits === '%') {
+                totalSum = (parseFloat(person.subtotal) * (tip + 1)) + shareOfTax
+            }
+            else if (tipUnits === '$') {
+                totalSum = parseFloat(person.subtotal) + (tip * percentOfSubtotal) + shareOfTax
+            }
             var total = totalSum.toFixed(2)
             // console.log(person.name + " percent of subtotal " + percentOfSubtotal)
             // console.log(person.name + " share of tax " + shareOfTax)
@@ -237,7 +243,7 @@ class App extends React.Component {
 
         for (var personIndex in this.state.people) {
             var person = this.state.people[personIndex]
-            var sum = 0.0;
+            var subtotalSum = 0.0;
             for (var item in this.state.items) {
                 if (this.state.items.hasOwnProperty(item)) {
                     if (this.state.items[item].people.indexOf(person.name) >= 0) {
@@ -245,12 +251,11 @@ class App extends React.Component {
                         var itemPrice = this.state.items[item].price
                         var numPeople = this.state.items[item].people.length
                         var perItemPrice = parseFloat(itemPrice/numPeople)
-                        sum += perItemPrice
+                        subtotalSum += perItemPrice
                     }
                 }
             }
-            var subtotal = sum.toFixed(2)
-            personSubtotals[person.name] = subtotal
+            personSubtotals[person.name] = subtotalSum
         }
         /* end for loop */
 
