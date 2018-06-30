@@ -12,11 +12,13 @@ class App extends React.Component {
         this.state = {
             people: [],
             items: {},
+            idCounter: 0,
             addedBlock: false,
             status: "people",
             selectedPeople: [],
             tax: 0.0,
-            errorMessage: ""
+            errorMessage: "",
+            subtotal: 0.0
         }
     }
 
@@ -26,8 +28,8 @@ class App extends React.Component {
                 <section>
                     <div className="section" id="people-section">
                         <h3>People</h3>
-                        <AddPersonComponent onAdd={ this.addPerson } addBlock={ this.addBlock }/>
-                        <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } people={ this.state.people } />
+                        <AddPersonComponent onAdd={ this.addPerson } addBlock={ this.addBlock.bind(this) }/>
+                        <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } />
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
                     <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
@@ -40,9 +42,13 @@ class App extends React.Component {
                 <section>
                     <button onClick={ this.switchPage.bind(this, "people") }>&lsaquo; Edit People</button>
                     <div className="section" id="item-section">
-                        <h3>Items on the Bill ({Object.keys(this.state.items).length})</h3>
-                        <ItemListComponent items={ this.state.items } removeItem={this.removeItem}/>
+                        <h3>Add Items to Bill</h3>
                         <AddItemComponent addItem={ this.addItem } selectEveryone={ this.selectAllPeople } selectedPeople={ this.state.selectedPeople } people={ this.state.people } togglePerson={ this.togglePerson }/>
+                    </div>
+                    <div className="section">
+                        <h3>Items on the Bill ({Object.keys(this.state.items).length})</h3>
+                        <div>Subtotal: ${ this.state.subtotal.toFixed(2) }</div>
+                        <ItemListComponent items={ this.state.items } removeItem={this.removeItem}/>
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
                     <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
@@ -62,19 +68,21 @@ class App extends React.Component {
         }
     }
 
-    addPerson = (name, index) => {
+    addPerson = (name) => {
         var personExists = this.state.people.findIndex(person => person.name === name)
         if (personExists > -1) {
             this.setState({
                 errorMessage: "Not adding duplicate person"
             })
-            return;
         }
-        var person = { "name": name, "id": index, "subtotal": 0, "total": 0 }
-        this.setState({
-            people: this.state.people.concat(person),
-            errorMessage: ""
-        })
+        else {
+            var person = { "name": name, "id": this.state.idCounter, "subtotal": 0, "total": 0 }
+            this.setState({
+                people: this.state.people.concat(person),
+                errorMessage: "",
+                idCounter: this.state.idCounter + 1
+            })
+        }
     }
 
     addBlock = () => {
@@ -85,15 +93,13 @@ class App extends React.Component {
                addedBlock: true
            })
         }
-        var newPeople = this.state.people
-        var block = ["Carrina", "Nicole", "Rica", "Shaina", "Shangnon", "vovoon"]
-        for (var index in block) {
-            var person = { "name": block[index], "id": index, "subtotal": 0, "total": 0 }
-            newPeople.push(person)
-        } 
-        console.log(newPeople)
+        var block = ["Carrina", "Nicole", "Rica", "Shaina", "Shangnon", "vovoon"].map((name, i) => {
+            return { "name": name, "id": this.state.idCounter + i, "subtotal": 0, "total": 0 };
+        });
+        console.log("block people", block)
         this.setState({
-            people: newPeople,
+            people: this.state.people.concat(block),
+            idCounter: this.state.idCounter + block.length
         })
     }
 
@@ -102,6 +108,17 @@ class App extends React.Component {
         console.log("new name: ", newName, " for ", newPeople[id])
         newPeople[id].name = newName
         console.log(newPeople)
+        this.setState({
+            people: newPeople,
+        })
+    }
+
+    deletePerson = (id) => {
+        var personIndex = this.state.people.findIndex(person => person.id === id);
+        var newPeople = this.state.people;
+        if (personIndex > -1) {
+            newPeople.splice(personIndex, 1);
+        }
         this.setState({
             people: newPeople,
         })
@@ -121,8 +138,17 @@ class App extends React.Component {
         this.setState({
             items: updatedItems,
             selectedPeople: [],
-            errorMessage: ""
+            errorMessage: "",
+            subtotal: this.getBillSubtotal()
         })
+    }
+
+    getBillSubtotal = () => {
+        var sum = Object.values(this.state.items).reduce(function(a, b) {
+            return { price: a.price + b.price };
+        }).price;
+        console.log("subtotal", sum);
+        return sum;
     }
 
     selectAllPeople = (all) => {
@@ -168,52 +194,33 @@ class App extends React.Component {
     }
 
     calculateTotals = (tip, tax, tipUnits) => {
-        var personTotals = {}
+        var subtotal = Object.values(this.state.items).reduce(function(a, b) {
+            return { price: a.price + b.price };
+        }).price;
 
-        var subtotal = 0.0;
-        for (var itemName in this.state.items) {
-            if (this.state.items.hasOwnProperty(itemName)) {
-                subtotal += parseFloat(this.state.items[itemName].price)
-            }
-        }
-        console.log("subtotal is: " + subtotal)
-
-        for (var personIndex in this.state.people) {
-            var person = this.state.people[personIndex]
-            var percentOfSubtotal = person.subtotal / subtotal
-            var shareOfTax = percentOfSubtotal * tax
-            var totalSum = 0.0
+        var people = this.state.people.map((person) => {
+            var percentOfSubtotal = person.subtotal / subtotal;
+            var shareOfTax = percentOfSubtotal * tax;
+            var totalSum = 0.0;
             if (tipUnits === '%') {
-                totalSum = (parseFloat(person.subtotal) * (tip + 1)) + shareOfTax
+                totalSum = (person.subtotal * (tip + 1)) + shareOfTax;
             }
             else if (tipUnits === '$') {
-                totalSum = parseFloat(person.subtotal) + (tip * percentOfSubtotal) + shareOfTax
+                totalSum = person.subtotal + (tip * percentOfSubtotal) + shareOfTax;
             }
-            var total = totalSum.toFixed(2)
-            // console.log(person.name + " percent of subtotal " + percentOfSubtotal)
-            // console.log(person.name + " share of tax " + shareOfTax)
-            // console.log(person.name + " total sum " + totalSum)
-            personTotals[person.name] = total
-        }
-        /* end for loop */
-
-        console.log(personTotals)
-
-        var oldPeople = this.state.people
-        for (var personIndex in this.state.people) {
-            var person = this.state.people[personIndex]
-            var newPerson = { "name": person.name, "subtotal": person.subtotal, "total": personTotals[person.name] }
-            oldPeople[personIndex] = newPerson
-        }
+            person.total = totalSum;
+            return person;
+        });
 
         this.setState({
-            people: oldPeople,
+            people: people,
             status: "total",
+            subtotal: this.getBillSubtotal()
         })
     }
 
     switchPage = (page) => {
-        console.log("switch to ", page);
+        // console.log("switch to", page);
         if (page === "items") {
             if (this.state.people < 1) {
                 this.setState({
@@ -233,7 +240,7 @@ class App extends React.Component {
                 this.doneWithItems();
             }
         }
-        console.log("allowed to switch page")
+        // console.log("allowed to switch page")
         this.setState({
             status: page
         })

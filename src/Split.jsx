@@ -5,8 +5,15 @@ class SplitComponent extends React.Component {
     constructor(props) {
         super(props)
 
+        var total = 0.0;
+
+        Object.keys(this.props.items).forEach((item) => {
+            total += parseFloat(this.props.items[item].price);
+        })
+
         this.state = {
-            tipUnits: "%"
+            tipUnits: "%",
+            total: total
         }
     }
 
@@ -16,50 +23,61 @@ class SplitComponent extends React.Component {
             <div>
                 <div style={{marginTop: '15px', marginBottom: '15px'}}>Here is the split { this.props.status }!</div>
                 <div className="responsive-inline-input-container">
-                    <label>Taxes and Fees</label>
-                    <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
+                    <label>Taxes and Fees: $</label>
+                    <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
                     <button className="right-button" onClick={ this.appendPeriod }>.</button>
                 </div>
                 <div className="responsive-inline-input-container">
-                    <label>Tip</label>
-                    <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip } onFocus={ this.highlightAllText }/>
+                    <label>Tip:  </label>
+                    <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
 
-                    <input type="checkbox" className="tip-units-checkbox" name="tip-percent" checked={this.state.tipUnits === '%'}/>
-                    <label htmlFor="tip-percent" className="tip-units-checkbox-label" onClick={ this.setTipUnits.bind(this, '%') }>%</label>
-                    <input type="checkbox" className="tip-units-checkbox" name="tip-dollars"  checked={this.state.tipUnits === '$'}/>
-                    <label htmlFor="tip-dollars" className="tip-units-checkbox-label" onClick={ this.setTipUnits.bind(this, '$') }>$</label>
+                    <input type="checkbox" ref="percentCheck" className="tip-units-checkbox" name="tip-percent" checked={this.state.tipUnits === '%'}/>
+                    <label htmlFor="tip-percent" className="tip-units-checkbox-label" onClick={ this.applyTaxTip.bind(this, '%') }>%</label>
+                    <input type="checkbox" ref="dollarCheck" className="tip-units-checkbox" name="tip-dollars" checked={this.state.tipUnits === '$'}/>
+                    <label htmlFor="tip-dollars" className="tip-units-checkbox-label" onClick={ this.applyTaxTip.bind(this, '$') }>$</label>
                 </div>
-                <button ref="applyTaxTipButton" className="accent-button" onClick={ this.applyTaxTip }>Apply Tax and Tip</button>
+                <div className="section-label">Total: ${ this.state.total.toFixed(2) }</div>
+                <div className="section-label">Subtotal: ${ this.getBillSubtotal().toFixed(2) }</div>
                 <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
-
-                <div class="section-label">Bill Total: </div>
             </div>
         )
     }
 
     renderPerson = (person) => {
         return (
-            <div className="person-split-container">{ person.name } owes ${ this.personOwes(person.name) } 
+            <div className="person-split-container" key={ person.id }>{ person.name } owes ${ this.getPersonTotal(person.name).toFixed(2) }
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person.name, item) ) }</ul>
             </div>
         )
     }
 
-    setTipUnits(unit) {
+    checkCheckbox = (refName) => {
+        this.refs[refName + "Check"].checked = true;
         this.setState({
-            tipUnits: unit
-        })
-        this.applyTaxTip()
+            tipUnits: (refName === "percent") ? "%" : "$"
+        });
     }
 
-    personOwes = (name) => {
+    getBillSubtotal = () => {
+        var sum = Object.values(this.props.items).reduce(function(a, b) {
+            return { price: a.price + b.price };
+        }).price;
+        return sum;
+    }
+
+    checkBillTotal() {
+        var total = 0;
+        console.log("items", this.props.items);
+        this.props.items.forEach((item) => {
+            total += item.price
+        });
+        console.log("total", total)
+        return "Bill Total: $" + total;
+    }
+
+    getPersonTotal = (name) => {
         var index = this.props.people.findIndex(person => person.name == name)
-        if (this.props.status === "subtotal") {
-            return this.props.people[index].subtotal.toFixed(2)
-        }
-        else if (this.props.status === "total") {
-            return this.props.people[index].total
-        }
+        return this.props.people[index].total
     }
 
     personItem = (person, itemName) => {
@@ -69,11 +87,11 @@ class SplitComponent extends React.Component {
             var perItemPrice = parseFloat(itemPrice/numPeople).toFixed(2)
             if (numPeople == 1) {
                 return (
-                    <li>{ itemName } is ${ perItemPrice }</li>
+                    <li key={ itemName + itemPrice }>{ itemName } is ${ perItemPrice }</li>
                 )
             }
             return (
-                <li>{ itemName } is ${ perItemPrice } per person</li>
+                <li key={ itemName + "-" + itemPrice }>{ itemName } is ${ perItemPrice } per person</li>
             )
         }
         else {
@@ -81,24 +99,36 @@ class SplitComponent extends React.Component {
         }
     }
 
-    applyTaxTip = () => {
-        if (this.state.tipUnits === '%') {
-            var tip = (parseFloat(this.refs.tip.value.trim()) / 100)
+    applyTaxTip = (units) => {
+        units = units || this.state.tipUnits;
+
+        if (units === '%') {
+            var tip = (parseFloat(this.refs.tip.value.trim()) / 100) || 0
         }
-        else if (this.state.tipUnits === '$') {
-            var tip = parseFloat(this.refs.tip.value.trim())
+        else if (units === '$') {
+            var tip = parseFloat(this.refs.tip.value.trim()) || 0
         }
 
-        if (isNaN(tip)) {
-            tip = 0;
+        var tax = parseFloat(this.refs.tax.value.trim()) || 0
+        var subtotal = this.getBillSubtotal();
+        var newTotal;
+        if (units === '%') {
+            newTotal = (subtotal + tax) + (subtotal * tip)
+            this.setState({
+                total: newTotal,
+                tipUnits: units
+            })
         }
-        var tax = parseFloat(this.refs.tax.value.trim())
-        if (isNaN(tax)) {
-            tax = 0;
+        else if (units === '$') {
+            newTotal = subtotal + tax + tip
+            this.setState({
+                total: newTotal,
+                tipUnits: units
+            })
         }
 
-        console.log("tip is " , tip + " tax is " , tax)
-        this.props.calculateTotals(tip, tax, this.state.tipUnits)
+        console.log("tip: " , tip + " tax: " , tax, "total: ", newTotal);
+        this.props.calculateTotals(tip, tax, units)
     }
 
     highlightAllText = (event) => {

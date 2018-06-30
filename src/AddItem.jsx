@@ -15,7 +15,6 @@ class AddItemComponent extends React.Component {
     render() {
         return (
             <div>
-                <p className="error-message">{ this.state.errorMessage }</p>
                 <div className="responsive-inline-input-container">
                     <label htmlFor="itemName">Item Name: </label>
                     <input type="text" ref="itemName" name="itemName"/>
@@ -26,10 +25,11 @@ class AddItemComponent extends React.Component {
                     <button className="right-button" onClick={ this.appendPeriod }>.</button>
                 </div>
                 <div>
-                    <p class="section-label">Who is splitting this item?
+                    <p className="section-label">Who is splitting this item?
                         <span type="button" className="clickable" id="select-everyone-button" onClick={ this.selectEveryone }>{ this.state.selectText }</span>
                     </p>
                     <div id="person-checkbox-container">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
+                    <p className="error-message">{ this.state.errorMessage }</p>
                     <button id="add-item-button" type="button" onClick={ this.addItem }>Add Item</button>
                 </div>
             </div>
@@ -38,7 +38,7 @@ class AddItemComponent extends React.Component {
 
     renderPersonCheckbox = (person) => {
         return (
-            <div className="person-checkbox-line" onClick={ this.togglePersonCheckbox.bind(this, person.name) }>
+            <div className="person-checkbox-line" key={ person.id } onClick={ this.togglePersonCheckbox.bind(this, person.name) }>
                 <input type="checkbox" className="person-checkbox" name={ person.name } checked={ this.props.selectedPeople.indexOf(person.name) > -1 }/>
                 <label htmlFor={ person.name } className="person-checkbox-label">{ person.name }</label>
             </div>
@@ -47,7 +47,7 @@ class AddItemComponent extends React.Component {
 
     addItem = () => {
         var priceInput = this.refs.itemPrice.value
-        var price = parseFloat(priceInput).toFixed(2)
+        var price = parseFloat(priceInput)
 
         if (isNaN(price)) {
             this.setState({

@@ -49,7 +49,7 @@ input {
     border-color: #dfe2d2;
     outline: none;
     font-size: 16px;
-    line-height: 26px;
+    line-height: 34px;
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 5px;
@@ -110,11 +110,11 @@ button {
     border-color: #84cca2;
     outline: none;
     font-size: 16px;
-    line-height: 26px;
+    height: 36px;
     padding-top: 0;
     padding-bottom: 0;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin-left: 5px;
     margin-right: 5px;
 }
@@ -166,7 +166,7 @@ button:hover {
     margin-bottom: 10px;
     margin-right: 5px;
     width: 200px;
-    height: 30px;
+    height: 40px;
 }
 
 .person-checkbox-line:hover {
@@ -181,9 +181,13 @@ button:hover {
     display: block;
     text-align: center; 
     height: 100%;
-    line-height: 30px;
+    line-height: 40px;
     border: 2px solid #dbd4ff;
     background-color: white;
+}
+
+.person-checkbox-label:hover {
+    cursor: pointer;
 }
 
 .person-checkbox:checked + .person-checkbox-label {
@@ -224,7 +228,7 @@ button:hover {
 .person-split-container ul {
     margin-top: 5px;
 } 
-.remove-item {
+.remove-item, .remove-person {
     margin-left: 5px;
 }
 

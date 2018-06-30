@@ -13,12 +13,12 @@ class ItemListComponent extends React.Component {
 
     renderItem = (itemName) => { 
         //var perPersonPrice = parseFloat(this.props.items[item].price)
-        var itemPrice = this.props.items[itemName].price;
+        var itemPrice = this.props.items[itemName].price.toFixed(2);
         var itemPeople = this.props.items[itemName].people;
         var itemId = this.props.items[itemName].id;
         var pricePerPerson = parseFloat(itemPrice/itemPeople.length).toFixed(2);
         return (
-            <li id={itemName} key={itemId} content={itemName}>
+            <li id={itemName} key={itemName + itemPrice} content={itemName}>
                 { itemName } for ${ itemPrice } <strong>split by</strong> { this.prettyArray(itemPeople) } (${ pricePerPerson } per person)
                 <span className="clickable remove-item" onClick={this.removeItem.bind(this, itemName)}>Remove Item</span>
             </li>
