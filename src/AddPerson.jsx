@@ -8,10 +8,10 @@ class AddPersonComponent extends React.Component {
 
     render() {
         return (
-            <div>
-                <input className="left-input" autoFocus type="text" ref="content" onKeyDown={ this.addPerson }/>
+            <div className="aligned-row">
+                <input className="left-input" autoFocus type="text" ref="content" onKeyDown={ this.addPerson } placeholder="Name"/>
                 <button className="right-button" onClick={ this.addPersonClick }>Add</button>
-                <span onClick={ this.addBlock } className="clickable" id="blockButton" ref="blockButton">Sample!</span>
+                <span onClick={ this.addBlock } className="clickable" id="blockButton" ref="blockButton">Sample</span>
             </div>
         )
     }

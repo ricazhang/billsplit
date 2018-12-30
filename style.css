@@ -1,10 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif+TC|Roboto|Niramit');
+
+
 html, body {
     margin: 0;
     padding: 0;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: 'Niramit', Helvetica, Arial, sans-serif;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(150deg,#9ACD32 10%, #FFC0CB 70%);
 }
 
 header {
+    font-family: 'Noto Serif TC';
     width: 100%;
     min-height: 25%;
     height: 20vw;
@@ -13,7 +26,7 @@ header {
     overflow: hidden;
     /* transform: skewY(-7deg); */
     transform-origin: 0;
-    background: linear-gradient(150deg,#53f 10%,#05d5ff 70%,#a6ffcb 94%);
+    background: linear-gradient(150deg,#9ACD32 10%, #FFC0CB 70%);
     opacity: 0.5;
     position: absolute;
 }
@@ -52,8 +65,8 @@ input {
     line-height: 34px;
     padding-top: 0;
     padding-bottom: 0;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .left-input, .left-button {
@@ -64,8 +77,12 @@ input {
     margin-left: 0;
 }
 
+.responsive-inline-input-container > input.tax-tip {
+    width: 30%;
+}
+
 input:focus {
-    border-color: #84cca2;
+    border-color: #9ACD32;
 }
 
 .iterated-input {
@@ -75,7 +92,8 @@ input:focus {
 }
 
 .iterated-input:focus {
-    border-bottom-color: #84cca2; 
+    border-color: transparent;
+    border-bottom-color: #9ACD32; 
 }
 
 .section-label {
@@ -83,7 +101,7 @@ input:focus {
 }
 
 .clickable {
-    color: #84cca2;
+    color: #9ACD32;
     font-weight: 500;
     display: inline-block;
 }
@@ -103,20 +121,14 @@ input:focus {
 }
 
 button {
-    background-color: #84cca2;
+    background-color: #9ACD32;
     color: white;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #84cca2;
+    border: 0;
     outline: none;
     font-size: 16px;
-    height: 36px;
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    height: 85px;
+    padding: 0 10px;
+    margin: 0 5px;
 }
 
 button:hover {
@@ -124,15 +136,13 @@ button:hover {
 }
 
 .accent-button {
-    background-color: #8870ff;
-    border-color: #8870ff;
+    background-color: #DB7093;
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
 .sub-button {
-    background-color: #dfe2d2;
-    border-color: #dfe2d2;
+    background-color: #9ACD32;
 }
 
 .responsive-inline-input-container {
@@ -146,7 +156,7 @@ button:hover {
     margin-right: 10px;
 }
 
-.person-checkbox-container {
+#person-checkbox-container {
     margin-top: 5px;
     display: -webkit-box;
     display: -moz-box;
@@ -182,8 +192,12 @@ button:hover {
     text-align: center; 
     height: 100%;
     line-height: 40px;
-    border: 2px solid #dbd4ff;
+    border: 2px solid #FFC0CB;
     background-color: white;
+}
+
+.person-checkbox:active + .person-checkbox-label {
+    background-color: #FFC0CB;
 }
 
 .person-checkbox-label:hover {
@@ -191,8 +205,7 @@ button:hover {
 }
 
 .person-checkbox:checked + .person-checkbox-label {
-    background-color: #dbd4ff;
-    font-weight: bold;
+    background-color: #FFC0CB;
 }
 
 .responsive-inline-input-container > .tip-units-checkbox {
@@ -201,9 +214,9 @@ button:hover {
 .responsive-inline-input-container > .tip-units-checkbox-label {
     display: inline-block;
     text-align: center;
-    border: 2px solid #dbd4ff;
+    border: 2px solid #9ACD32;
     background-color: white;
-    width: auto !important;
+    width: 57px !important;
     margin-right: 0px !important;
     padding-left: 5px;
     padding-right: 5px;
@@ -211,14 +224,18 @@ button:hover {
 }
 
 .responsive-inline-input-container > .tip-units-checkbox:checked + .tip-units-checkbox-label {
-    background-color: #dbd4ff;
+    background-color: 	#9ACD32;
     font-weight: bold;
+    color: white;
 }
 
 #add-item-button {
     clear: both;
 }
 
+.aligned-row > * {
+    vertical-align: middle;
+}
 .breakdown-container {
     margin-top: 5px;
 }
@@ -229,7 +246,7 @@ button:hover {
     margin-top: 5px;
 } 
 .remove-item, .remove-person {
-    margin-left: 5px;
+    margin-left: 20px;
 }
 
 .vertical-space {
@@ -260,27 +277,26 @@ button:hover {
     input {
         font-size: inherit;
         line-height: 2.25em;
-        border-width: .1em;
+        border-width: 2px;
     }
     input:focus {
-        border-width: .1em;
+        border-width: 2px;
     }
     button {
         font-size: inherit;
         line-height: 2.25em;
         padding-left: 1em;
         padding-right: 1em;
-        border-width: .1em;
     }
     #select-everyone-button {
         margin-top: 1em;
-        margin-bottom: 1em;
+        margin-left: 10px;
     }
     #add-item-button {
         margin-top: 1em;
         margin-bottom: 1em;
     }
-    .person-checkbox-container {
+    #person-checkbox-container {
         text-align: center;
     }
     .person-checkbox-line {

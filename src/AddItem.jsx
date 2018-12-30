@@ -19,7 +19,7 @@ class AddItemComponent extends React.Component {
                     <label htmlFor="itemName">Item Name: </label>
                     <input type="text" ref="itemName" name="itemName"/>
                 </div>
-                <div className="responsive-inline-input-container">
+                <div className="responsive-inline-input-container aligned-row">
                     <label htmlFor="itemPrice">Item Price: $</label>
                     <input type="tel" ref="itemPrice" name="itemPrice" className="left-input" onKeyDown={ this.splitItem }/>
                     <button className="right-button" onClick={ this.appendPeriod }>.</button>

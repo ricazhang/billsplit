@@ -50,7 +50,6 @@ class ItemListComponent extends React.Component {
     }
 
     removeItem(itemName) {
-        console.log("removing item: ", itemName);
         this.props.removeItem(itemName);
     }
 }

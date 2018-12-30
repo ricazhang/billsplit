@@ -24,12 +24,12 @@ class SplitComponent extends React.Component {
                 <div style={{marginTop: '15px', marginBottom: '15px'}}>Here is the split { this.props.status }!</div>
                 <div className="responsive-inline-input-container">
                     <label>Taxes and Fees: $</label>
-                    <input type="tel" className="left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
+                    <input type="tel" className="tax-tip left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
                     <button className="right-button" onClick={ this.appendPeriod }>.</button>
                 </div>
                 <div className="responsive-inline-input-container">
                     <label>Tip:  </label>
-                    <input type="tel" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
+                    <input type="tel" className="tax-tip" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
 
                     <input type="checkbox" ref="percentCheck" className="tip-units-checkbox" name="tip-percent" checked={this.state.tipUnits === '%'}/>
                     <label htmlFor="tip-percent" className="tip-units-checkbox-label" onClick={ this.applyTaxTip.bind(this, '%') }>%</label>
