@@ -24,7 +24,7 @@ class PersonListComponent extends React.Component {
             <div key={person.id}>
                 <input value={ person.name } ref={ person.name } className="iterated-input" onFocus={ this.startEditingPerson.bind(this, person, 'inputFocus') } onChange={ this.handleChange }/>
                 <span className="clickable" onClick={ this.startEditingPerson.bind(this, person, 'editButton') }>Edit</span>
-                <span className="clickable remove-person" onClick={ this.deletePerson.bind(this, person) }>Delete</span>
+                <span className="clickable right-clickable" onClick={ this.deletePerson.bind(this, person) }>Delete</span>
             </div>
         )
     }

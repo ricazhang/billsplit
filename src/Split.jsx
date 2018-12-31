@@ -1,6 +1,8 @@
 import React from 'react';
 import {findDOMNode, render} from 'react-dom';
 
+import FeesComponent from './Fees.jsx';
+
 class SplitComponent extends React.Component {
     constructor(props) {
         super(props)
@@ -13,34 +15,52 @@ class SplitComponent extends React.Component {
 
         this.state = {
             tipUnits: "%",
-            total: total
+            total: total,
+            fees: []
         }
     }
 
     render() {
-        // call render person
         return (
             <div>
                 <div style={{marginTop: '15px', marginBottom: '15px'}}>Here is the split { this.props.status }!</div>
-                <div className="responsive-inline-input-container">
-                    <label>Taxes and Fees: $</label>
-                    <input type="tel" className="tax-tip left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
-                    <button className="right-button" onClick={ this.appendPeriod }>.</button>
-                </div>
-                <div className="responsive-inline-input-container">
+                <div className="responsive-inline-input-container aligned-row">
                     <label>Tip:  </label>
-                    <input type="tel" className="tax-tip" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
+                    <input type="number" className="tax-tip" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
 
                     <input type="checkbox" ref="percentCheck" className="tip-units-checkbox" name="tip-percent" checked={this.state.tipUnits === '%'}/>
                     <label htmlFor="tip-percent" className="tip-units-checkbox-label" onClick={ this.applyTaxTip.bind(this, '%') }>%</label>
                     <input type="checkbox" ref="dollarCheck" className="tip-units-checkbox" name="tip-dollars" checked={this.state.tipUnits === '$'}/>
                     <label htmlFor="tip-dollars" className="tip-units-checkbox-label" onClick={ this.applyTaxTip.bind(this, '$') }>$</label>
                 </div>
-                <div className="section-label">Total: ${ this.state.total.toFixed(2) }</div>
+                <div className="responsive-inline-input-container aligned-row">
+                    <label>Taxes and Fees: $</label>
+                    <input type="tel" className="tax-tip left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
+                    <button className="right-button" onClick={ this.appendPeriod }>.</button>
+                    <span className="clickable right-clickable" onClick={ this.addFee }>+ Fee</span>
+                </div>
+                <FeesComponent fees={ this.state.fees } editFee={ this.editFee } deleteFee={ this.deleteFee } />
+
                 <div className="section-label">Subtotal: ${ this.getBillSubtotal().toFixed(2) }</div>
+                { this.renderFeesTotal() }
+                <div className="section-label">Total: ${ this.state.total.toFixed(2) }</div>
                 <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
             </div>
         )
+    }
+
+    renderFeesTotal = () => {
+        console.log("rendering fees total");
+        if (this.getFeesTotal() > 0 || this.state.fees.length > 0) {
+            let totalTaxesAndFees = this.getFeesTotal() + this.getTaxAsNumber();
+            let formattedTotal = totalTaxesAndFees.toFixed(2);
+            return (
+                <div className="section-label">
+                    <span>Taxes and Fees: $</span>
+                    <span>{ formattedTotal }</span>
+                </div>
+            )
+        }
     }
 
     renderPerson = (person) => {
@@ -109,7 +129,7 @@ class SplitComponent extends React.Component {
             var tip = parseFloat(this.refs.tip.value.trim()) || 0
         }
 
-        var tax = parseFloat(this.refs.tax.value.trim()) || 0
+        var tax = this.getTaxAsNumber();
         var subtotal = this.getBillSubtotal();
         var newTotal;
         if (units === '%') {
@@ -140,6 +160,48 @@ class SplitComponent extends React.Component {
             this.refs.tax.value = this.refs.tax.value + "."
         }
         findDOMNode(this.refs.tax).focus(); 
+    }
+
+    addFee = () => {
+        console.log("add fees");
+        this.setState({
+            fees: this.state.fees.concat({
+                amount: 0,
+                formatted: "0",
+            })
+        })
+    }
+
+    getFeesTotal = () => {
+        console.log('fees total', this.state.fees, this.state.fees.reduce((a, b) => a + b.amount, 0));
+        return this.state.fees.reduce((a, b) => a + b.amount, 0);
+    }
+
+    getTaxAsNumber = () => {
+        if (this.refs.hasOwnProperty('tax')) {
+            return parseFloat(this.refs.tax.value || 0);
+        }
+        return 0;
+    }
+
+    editFee = (editedFee, index) => {
+        if (editedFee.amount >= 0) {
+            let newFees = this.state.fees;
+            newFees[index] = editedFee;
+            this.setState({
+                fees: newFees,
+            })
+        }
+    }
+
+    deleteFee = (index) => {
+        if (index > -1 && index < this.state.fees.length) {
+            let newFee = this.state.fees;
+            newFee.splice(index, 1);
+            this.setState({
+                fees: newFee,
+            })
+        }
     }
 }
 

@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif+TC|Roboto|Niramit');
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif+TC|Roboto|Open+Sans');
 
 
 html, body {
     margin: 0;
     padding: 0;
-    font-family: 'Niramit', Helvetica, Arial, sans-serif;
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
 .footer {
@@ -77,6 +77,13 @@ input {
     margin-left: 0;
 }
 
+.fee-container {
+    text-align: right;
+}
+.fee-container > input {
+    width: 30%;
+}
+
 .responsive-inline-input-container > input.tax-tip {
     width: 30%;
 }
@@ -101,9 +108,12 @@ input:focus {
 }
 
 .clickable {
-    color: #9ACD32;
+    color: #DB7093;
     font-weight: 500;
     display: inline-block;
+}
+.right-clickable {
+    margin-left: 20px;
 }
 
 .clickable:hover {
@@ -114,10 +124,6 @@ input:focus {
     margin-bottom: 1em;
     display: inline;
     margin-left: 5px;
-}
-
-#blockButton {
-    margin-left: 10px;
 }
 
 button {
@@ -244,9 +250,6 @@ button:hover {
 } 
 .person-split-container ul {
     margin-top: 5px;
-} 
-.remove-item, .remove-person {
-    margin-left: 20px;
 }
 
 .vertical-space {

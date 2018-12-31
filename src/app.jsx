@@ -52,6 +52,7 @@ class App extends React.Component {
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
                     <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
+                    {/* <div className="clickable right-clickable" onClick={ this.addSampleItems }>Sample Items</div> */}
                     <div className="vertical-space"></div>
                 </section>
             )
@@ -101,6 +102,30 @@ class App extends React.Component {
             people: this.state.people.concat(block),
             idCounter: this.state.idCounter + block.length
         })
+    }
+
+    addSampleItems = () => {
+        if (this.state.addedBlock) {
+            var item1 = {
+                name: "apple",
+                id: 0,
+                price: 2,
+                people: this.state.people.map((person) => {return person.name}),
+            }
+            var item2 = {
+                name: "orange",
+                id: 1,
+                price: 10,
+                people: this.state.people.map((person) => {return person.name}),
+            }
+            let newItems = this.state.items;
+            newItems[item1.name] = item1;
+            newItems[item2.name] = item2;
+            this.setState({
+                items: newItems,
+                subtotal: this.getBillSubtotal(),
+            })
+        }
     }
 
     editPerson = (newName, id) => {
