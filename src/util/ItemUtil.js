@@ -54,3 +54,5 @@ class ItemUtil {
         return items;
     }
 }
+
+export default ItemUtil;

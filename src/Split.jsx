@@ -74,6 +74,9 @@ class SplitComponent extends React.Component {
     componentDidMount() {
         window.addEventListener("beforeunload", this.onUnload);
         this.loadSavedState();
+        var tax = this.getTaxAsNumber();
+        var tip = parseFloat(this.refs.tip.value.trim()) || 0;
+        this.props.calculateTotals(tip, tax, this.state.tipUnits);
     }
  
     componentWillUnmount() {
