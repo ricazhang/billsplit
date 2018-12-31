@@ -1,5 +1,5 @@
 import React from 'react';
-import {findDOMNode, render} from 'react-dom';
+import {findDOMNode} from 'react-dom';
 
 class AddItemComponent extends React.Component {
     constructor(props) {

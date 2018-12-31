@@ -1,5 +1,4 @@
 import React from 'react';
-import {findDOMNode, render} from 'react-dom';
 
 class ItemListComponent extends React.Component {
     render() {

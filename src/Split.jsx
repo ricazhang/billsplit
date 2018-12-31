@@ -1,5 +1,5 @@
 import React from 'react';
-import {findDOMNode, render} from 'react-dom';
+import {findDOMNode} from 'react-dom';
 
 import FeesComponent from './Fees.jsx';
 
@@ -69,6 +69,27 @@ class SplitComponent extends React.Component {
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person.name, item) ) }</ul>
             </div>
         )
+    }
+
+    componentDidMount() {
+        window.addEventListener("beforeunload", this.onUnload);
+        this.loadSavedState();
+    }
+ 
+    componentWillUnmount() {
+         window.removeEventListener("beforeunload", this.onUnload)
+    }
+
+    onUnload = () => {
+        console.log("SplitComponent detected back/refresh, saving: ", this.state);
+        localStorage.setItem("SplitComponent", JSON.stringify(this.state));
+    }
+
+    loadSavedState = () => {
+        if (localStorage.getItem("SplitComponent")) {
+            console.log("loaded", JSON.parse(localStorage.getItem("SplitComponent")));
+            this.setState(JSON.parse(localStorage.getItem("SplitComponent")));
+        }
     }
 
     checkCheckbox = (refName) => {

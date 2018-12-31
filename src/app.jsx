@@ -1,5 +1,5 @@
 import React from 'react';
-import {findDOMNode, render} from 'react-dom';
+import {render} from 'react-dom';
 import AddPersonComponent from './AddPerson.jsx';
 import ItemListComponent from './ItemList.jsx';
 import AddItemComponent from './AddItem.jsx';
@@ -18,7 +18,8 @@ class App extends React.Component {
             selectedPeople: [],
             tax: 0.0,
             errorMessage: "",
-            subtotal: 0.0
+            subtotal: 0.0,
+            loadedSavedData: false,
         }
     }
 
@@ -27,6 +28,7 @@ class App extends React.Component {
             return (
                 <section>
                     <div className="section" id="people-section">
+                        { this.renderLoadSavedState() }
                         <h3>People</h3>
                         <AddPersonComponent onAdd={ this.addPerson } addBlock={ this.addBlock.bind(this) }/>
                         <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } />
@@ -69,6 +71,34 @@ class App extends React.Component {
         }
     }
 
+    renderLoadSavedState = () => {
+        if (localStorage.getItem("AppComponent")) {
+            return (
+                <div className="clickable" onClick={ this.loadSavedState }>Load Previous Session</div>
+            )
+        }
+    }
+
+    componentDidMount = () => {
+        window.addEventListener("beforeunload", this.onUnload)
+    }
+ 
+    componentWillUnmount = () => {
+         window.removeEventListener("beforeunload", this.onUnload)
+    }
+
+    onUnload = () => {
+        console.log("AppComponent detected back/refresh, saving: ", this.state);
+        localStorage.setItem("AppComponent", JSON.stringify(this.state));
+    }
+
+    loadSavedState = () => {
+        if (localStorage.getItem("AppComponent")) {
+            console.log("loaded", JSON.parse(localStorage.getItem("AppComponent")));
+            this.setState(JSON.parse(localStorage.getItem("AppComponent")));
+        }
+    }
+
     addPerson = (name) => {
         var personExists = this.state.people.findIndex(person => person.name === name)
         if (personExists > -1) {
@@ -97,7 +127,6 @@ class App extends React.Component {
         var block = ["Carrina", "Nicole", "Rica", "Shaina", "Shangnon", "vovoon"].map((name, i) => {
             return { "name": name, "id": this.state.idCounter + i, "subtotal": 0, "total": 0 };
         });
-        console.log("block people", block)
         this.setState({
             people: this.state.people.concat(block),
             idCounter: this.state.idCounter + block.length
@@ -130,9 +159,7 @@ class App extends React.Component {
 
     editPerson = (newName, id) => {
         var newPeople = this.state.people
-        console.log("new name: ", newName, " for ", newPeople[id])
         newPeople[id].name = newName
-        console.log(newPeople)
         this.setState({
             people: newPeople,
         })
@@ -207,7 +234,6 @@ class App extends React.Component {
     }
 
     removeItem = (itemName) => {
-        console.log("removing: ", itemName);
         if (itemName) {
             var newItems = this.state.items;
             delete newItems[itemName];
@@ -245,7 +271,6 @@ class App extends React.Component {
     }
 
     switchPage = (page) => {
-        // console.log("switch to", page);
         if (page === "items") {
             if (this.state.people < 1) {
                 this.setState({
@@ -265,7 +290,6 @@ class App extends React.Component {
                 this.doneWithItems();
             }
         }
-        // console.log("allowed to switch page")
         this.setState({
             status: page
         })
