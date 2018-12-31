@@ -28,6 +28,7 @@ class App extends React.Component {
             return (
                 <section>
                     <div className="section" id="people-section">
+                        <p>Easily split bills between friends.</p>
                         { this.renderLoadSavedState() }
                         <h3>People</h3>
                         <AddPersonComponent onAdd={ this.addPerson } addBlock={ this.addBlock.bind(this) }/>
@@ -88,8 +89,10 @@ class App extends React.Component {
     }
 
     onUnload = () => {
-        console.log("AppComponent detected back/refresh, saving: ", this.state);
-        localStorage.setItem("AppComponent", JSON.stringify(this.state));
+        if (this.state.people.length > 0) {
+            console.log("AppComponent detected back/refresh, saving: ", this.state);
+            localStorage.setItem("AppComponent", JSON.stringify(this.state));
+        }
     }
 
     loadSavedState = () => {

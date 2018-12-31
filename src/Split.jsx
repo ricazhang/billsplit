@@ -81,8 +81,10 @@ class SplitComponent extends React.Component {
     }
 
     onUnload = () => {
-        console.log("SplitComponent detected back/refresh, saving: ", this.state);
-        localStorage.setItem("SplitComponent", JSON.stringify(this.state));
+        if (this.state.fees.length > 0 || this.state.tipUnits !== "%") {
+            console.log("SplitComponent detected back/refresh, saving: ", this.state);
+            localStorage.setItem("SplitComponent", JSON.stringify(this.state));
+        }
     }
 
     loadSavedState = () => {

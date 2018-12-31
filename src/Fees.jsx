@@ -44,8 +44,10 @@ class FeesComponent extends React.Component {
 
     startEditingFee(index, from) {
         findDOMNode(this.refs[this.getKey(index)]).focus(); 
-        findDOMNode(this.refs[this.getKey(index)]).select(); 
-
+        if (from === 'editButton') {
+            findDOMNode(this.refs[this.getKey(index)]).select(); 
+        }
+        
         this.setState({
             editingIndex: index
         })

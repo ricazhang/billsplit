@@ -31,7 +31,9 @@ class PersonListComponent extends React.Component {
 
     startEditingPerson(person, from) {
         findDOMNode(this.refs[person.name]).focus(); 
-        findDOMNode(this.refs[person.name]).select(); 
+        if (from === 'editButton') {
+            findDOMNode(this.refs[person.name]).select(); 
+        }
 
         this.setState({
             editingId: person.id
