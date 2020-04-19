@@ -1,13 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif+TC|Roboto|Open+Sans');
 
-
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+html {
+    height: 100%; 
 }
 
-.footer {
+body {
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+footer {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -19,21 +22,18 @@ html, body {
 header {
     font-family: 'Noto Serif TC';
     width: 100%;
-    min-height: 25%;
-    height: 20vw;
+    height: 20vh;
     left: 0;
-    top: -100px;
-    overflow: hidden;
-    /* transform: skewY(-7deg); */
-    transform-origin: 0;
+    top: 0;
     background: linear-gradient(150deg,#9ACD32 10%, #FFC0CB 70%);
     opacity: 0.5;
     position: absolute;
 }
 
 #entry-point {
-    margin-top: 10vh;
-    padding-top: 100px;
+    padding-top: calc(20vh + 20px);
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 #page-title {
