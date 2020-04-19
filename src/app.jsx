@@ -35,7 +35,7 @@ class App extends React.Component {
                         <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } />
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
-                    <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
+                    <button type="button" ref="done-button" disabled={ this.state.people.length === 0 } className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
                     <div className="vertical-space"></div>
                 </section>
             )
@@ -51,7 +51,7 @@ class App extends React.Component {
                     <div className="section">
                         <h3>Items on the Bill ({Object.keys(this.state.items).length})</h3>
                         <div>Subtotal: ${ this.state.subtotal.toFixed(2) }</div>
-                        <ItemListComponent items={ this.state.items } removeItem={this.removeItem}/>
+                        <ItemListComponent items={ this.state.items } removeItem={this.removeItem} numPeople={ this.state.people.length }/>
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
                     <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
@@ -112,7 +112,7 @@ class App extends React.Component {
         else {
             var person = { "name": name, "id": this.state.idCounter, "subtotal": 0, "total": 0 }
             this.setState({
-                people: this.state.people.concat(person),
+                people: [person].concat(this.state.people),
                 errorMessage: "",
                 idCounter: this.state.idCounter + 1
             })
@@ -247,14 +247,14 @@ class App extends React.Component {
         }
     }
 
-    calculateTotals = (tip, tax, tipUnits) => {
+    calculateTotals = (tip, taxAndFees, tipUnits) => {
         var subtotal = Object.values(this.state.items).reduce(function(a, b) {
             return { price: a.price + b.price };
         }).price;
 
         var people = this.state.people.map((person) => {
             var percentOfSubtotal = person.subtotal / subtotal;
-            var shareOfTax = percentOfSubtotal * tax;
+            var shareOfTax = percentOfSubtotal * taxAndFees;
             var totalSum = 0.0;
             if (tipUnits === '%') {
                 totalSum = (person.subtotal * (tip + 1)) + shareOfTax;

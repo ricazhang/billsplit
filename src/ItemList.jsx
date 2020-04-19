@@ -2,10 +2,9 @@ import React from 'react';
 
 class ItemListComponent extends React.Component {
     render() {
-        //console.log(this.props.items)
         return (
             <div>
-                <ul>{ Object.keys(this.props.items).map(this.renderItem) }</ul>
+                <ul>{ Object.keys(this.props.items).slice(0).reverse().map(this.renderItem) }</ul>
             </div>
         )
     }
@@ -18,31 +17,34 @@ class ItemListComponent extends React.Component {
         var pricePerPerson = parseFloat(itemPrice/itemPeople.length).toFixed(2);
         return (
             <li id={itemName} key={itemName + itemPrice} content={itemName}>
-                { itemName } for ${ itemPrice } <strong>split by</strong> { this.prettyArray(itemPeople) } (${ pricePerPerson } per person)
-                <span className="clickable remove-item" onClick={this.removeItem.bind(this, itemName)}>Remove Item</span>
+                { itemName } for ${ itemPrice } <strong>split by</strong> { this.prettyArray(itemPeople, this.props.numPeople ) } (${ pricePerPerson } per person)
+                <div className="clickable remove-item" onClick={this.removeItem.bind(this, itemName)}>Remove Item</div>
             </li>
         )
     }
 
-    prettyArray(arr) {
+    prettyArray(peopleList, numPeople) {
         var str = ""
-        if (arr.length < 1) {
+        if (peopleList.length < 1) {
             return "no one"
         }
-        else if (arr.length == 1) {
-            return arr[0]
+        else if (peopleList.length == 1) {
+            return peopleList[0]
         }
-        else if (arr.length == 2) {
-            str = arr[0] + " and " + arr[1]
+        else if (peopleList.length == 2) {
+            str = peopleList[0] + " and " + peopleList[1]
             return str
         }
-        
-        for (var i in arr) {
-            if (i != arr.length - 1) {
-                str += arr[i] + ", "
+        else if (peopleList.length == numPeople) {
+            return "everyone"
+        }
+        let sortedPeopleList = peopleList.slice(0).sort();
+        for (var i in sortedPeopleList) {
+            if (i != sortedPeopleList.length - 1) {
+                str += sortedPeopleList[i] + ", "
             }
             else {
-                str += " and " + arr[i]
+                str += " and " + sortedPeopleList[i]
             }
         }
         return str

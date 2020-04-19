@@ -36,12 +36,13 @@ class SplitComponent extends React.Component {
                 <div className="responsive-inline-input-container aligned-row">
                     <label>Taxes and Fees: $</label>
                     <input type="tel" className="tax-tip left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
-                    <button className="right-button" onClick={ this.appendPeriod }>.</button>
-                    <span className="clickable right-clickable" onClick={ this.addFee }>+ Fee</span>
+                    <button className="right-button decimal-button" onClick={ this.appendPeriod }>.</button>
+                    <span className="clickable right-clickable" onClick={ this.addFeeBox }>+ Fee</span>
                 </div>
                 <FeesComponent fees={ this.state.fees } editFee={ this.editFee } deleteFee={ this.deleteFee } />
 
                 <div className="section-label">Subtotal: ${ this.getBillSubtotal().toFixed(2) }</div>
+                <div className="section-label">Gratuity: ${ this.calculateGratuity().toFixed(2) }</div>
                 { this.renderFeesTotal() }
                 <div className="section-label">Total: ${ this.state.total.toFixed(2) }</div>
                 <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
@@ -50,7 +51,6 @@ class SplitComponent extends React.Component {
     }
 
     renderFeesTotal = () => {
-        console.log("rendering fees total");
         if (this.getFeesTotal() > 0 || this.state.fees.length > 0) {
             let totalTaxesAndFees = this.getFeesTotal() + this.getTaxAsNumber();
             let formattedTotal = totalTaxesAndFees.toFixed(2);
@@ -145,36 +145,44 @@ class SplitComponent extends React.Component {
         }
     }
 
+    calculateGratuity = () => {
+        if (!this.refs.tip) {
+            // Return 0 if tip element isn't loaded yet
+            return 0;
+        }
+        if (this.state.tipUnits === '%') {
+            var tip = (parseFloat(this.refs.tip.value.trim()) / 100) || 0
+            return tip * this.getBillSubtotal();
+        }
+        // units is $
+        return parseFloat(this.refs.tip.value.trim()) || 0
+    }
+
     applyTaxTip = (units) => {
         units = units || this.state.tipUnits;
-
-        if (units === '%') {
-            var tip = (parseFloat(this.refs.tip.value.trim()) / 100) || 0
-        }
-        else if (units === '$') {
-            var tip = parseFloat(this.refs.tip.value.trim()) || 0
-        }
-
         var tax = this.getTaxAsNumber();
+        const fees = this.getFeesTotal();
         var subtotal = this.getBillSubtotal();
         var newTotal;
         if (units === '%') {
-            newTotal = (subtotal + tax) + (subtotal * tip)
+            var tip = (parseFloat(this.refs.tip.value.trim()) / 100) || 0
+            newTotal = (subtotal + tax) + (subtotal * tip) + fees
             this.setState({
                 total: newTotal,
                 tipUnits: units
             })
         }
         else if (units === '$') {
-            newTotal = subtotal + tax + tip
+            var tip = parseFloat(this.refs.tip.value.trim()) || 0
+            newTotal = subtotal + tax + tip + fees
             this.setState({
                 total: newTotal,
                 tipUnits: units
             })
         }
 
-        console.log("tip: " , tip + " tax: " , tax, "total: ", newTotal);
-        this.props.calculateTotals(tip, tax, units)
+        console.log("tip: " , tip + " taxAndFees: " , tax + fees, "total: ", newTotal);
+        this.props.calculateTotals(tip, tax + fees, units)
     }
 
     highlightAllText = (event) => {
@@ -188,8 +196,7 @@ class SplitComponent extends React.Component {
         findDOMNode(this.refs.tax).focus(); 
     }
 
-    addFee = () => {
-        console.log("add fees");
+    addFeeBox = () => {
         this.setState({
             fees: this.state.fees.concat({
                 amount: 0,
@@ -199,7 +206,7 @@ class SplitComponent extends React.Component {
     }
 
     getFeesTotal = () => {
-        console.log('fees total', this.state.fees, this.state.fees.reduce((a, b) => a + b.amount, 0));
+        console.log('fees total:', this.state.fees, "= $",  this.state.fees.reduce((a, b) => a + b.amount, 0));
         return this.state.fees.reduce((a, b) => a + b.amount, 0);
     }
 

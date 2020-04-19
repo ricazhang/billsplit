@@ -21,20 +21,19 @@ class AddPersonComponent extends React.Component {
     }
 
     addPerson = (event) => {
-        // || event.key == ' '
         if (event.key == 'Enter') {
             if (this.refs.content.value.trim().length > 0) {
                 event.preventDefault()
-                this.props.onAdd(this.refs.content.value)
-                findDOMNode(this.refs.content).value = "";  
-                findDOMNode(this.refs.content).focus();  
+                this.addPersonClick(event);
             }
         }
     }
 
     addPersonClick = () => {
         if (this.refs.content.value.trim().length > 0) {
-            this.props.onAdd(this.refs.content.value)
+            this.props.onAdd(this.refs.content.value);
+            findDOMNode(this.refs.content).value = "";  
+            findDOMNode(this.refs.content).focus();  
         }
     }
 }

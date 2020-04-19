@@ -87,6 +87,8 @@ class AddItemComponent extends React.Component {
         findDOMNode(this.refs.itemName).value = "";
         findDOMNode(this.refs.itemPrice).value = "";
         findDOMNode(this.refs.itemName).focus();   
+        // Toggle select everyone back to unselected
+        this.deselectEveryone();
     } 
 
     appendPeriod = () => {
@@ -105,12 +107,17 @@ class AddItemComponent extends React.Component {
             })
         }
         else {
-            this.props.selectEveryone(false);
-            this.setState({
-                selectAll: true,
-                selectText: 'Select Everyone'
-            })
+            this.deselectEveryone();
         }
+    }
+
+    // Toggle select everyone back to unselected and change button state.
+    deselectEveryone = () => {
+        this.props.selectEveryone(false);
+        this.setState({
+            selectAll: true,
+            selectText: 'Select Everyone'
+        })
     }
     
     // this method is bound in the render
