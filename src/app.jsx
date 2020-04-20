@@ -199,6 +199,9 @@ class App extends React.Component {
     }
 
     getBillSubtotal = () => {
+        if (Object.keys(this.state.items).length === 0) {
+            return 0;
+        }
         var sum = Object.values(this.state.items).reduce(function(a, b) {
             return { price: a.price + b.price };
         }).price;
@@ -242,7 +245,8 @@ class App extends React.Component {
             delete newItems[itemId];
             console.log(newItems)
             this.setState({
-                items: newItems
+                items: newItems,
+                subtotal: this.getBillSubtotal()
             })
         }
     }
