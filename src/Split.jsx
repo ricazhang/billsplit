@@ -45,7 +45,7 @@ class SplitComponent extends React.Component {
                 <div className="section-label">Gratuity: ${ this.calculateGratuity().toFixed(2) }</div>
                 { this.renderFeesTotal() }
                 <div className="section-label">Total: ${ this.state.total.toFixed(2) }</div>
-                <div className="breakdown-container">{ this.props.people.map(this.renderPerson) }</div>
+                <div className="top-spacing-small">{ this.props.people.map(this.renderPerson) }</div>
             </div>
         )
     }
