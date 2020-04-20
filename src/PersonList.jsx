@@ -12,7 +12,7 @@ class PersonListComponent extends React.Component {
 
     render() {
         return (
-            <div class="person-list-container">
+            <div className="person-list-container">
                 <div>{ this.props.people.length } people</div>
                 <ul>{ this.props.people.map(this.renderPerson) }</ul>
                 <p className="error-message">{ this.state.errorMessage }</p>
