@@ -134,7 +134,7 @@ class SplitComponent extends React.Component {
             const perItemPrice = parseFloat(itemPrice/numPeople).toFixed(2)
             if (numPeople == 1) {
                 return (
-                    <li>{ itemName } is ${ perItemPrice }</li>
+                    <li key={ itemId + person }>{ itemName } is ${ perItemPrice }</li>
                 )
             }
             return (
