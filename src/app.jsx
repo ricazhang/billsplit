@@ -185,9 +185,9 @@ class App extends React.Component {
 
     addItem = (item) => {
         var updatedItems = this.state.items
-        updatedItems[item.name] = {
+        updatedItems[item.id] = {
+            name: item.name,
             price: item.price,
-            id: item.id,
             people: this.state.selectedPeople
         }
         this.setState({
@@ -236,10 +236,10 @@ class App extends React.Component {
         }
     }
 
-    removeItem = (itemName) => {
-        if (itemName) {
+    removeItem = (itemId) => {
+        if (itemId) {
             var newItems = this.state.items;
-            delete newItems[itemName];
+            delete newItems[itemId];
             console.log(newItems)
             this.setState({
                 items: newItems

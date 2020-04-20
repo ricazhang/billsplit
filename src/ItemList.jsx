@@ -9,16 +9,15 @@ class ItemListComponent extends React.Component {
         )
     }
 
-    renderItem = (itemName) => { 
-        //var perPersonPrice = parseFloat(this.props.items[item].price)
-        var itemPrice = this.props.items[itemName].price.toFixed(2);
-        var itemPeople = this.props.items[itemName].people;
-        var itemId = this.props.items[itemName].id;
-        var pricePerPerson = parseFloat(itemPrice/itemPeople.length).toFixed(2);
+    renderItem = (itemId) => {
+        const itemPrice = this.props.items[itemId].price.toFixed(2);
+        const itemPeople = this.props.items[itemId].people;
+        const itemName = this.props.items[itemId].name;
+        const pricePerPerson = parseFloat(itemPrice/itemPeople.length).toFixed(2);
         return (
-            <li id={itemName} key={itemName + itemPrice} content={itemName}>
+            <li id={itemId} key={itemId} content={itemId}>
                 { itemName } for ${ itemPrice } <strong>split by</strong> { this.prettyArray(itemPeople, this.props.numPeople ) } (${ pricePerPerson } per person)
-                <div className="clickable remove-item" onClick={this.removeItem.bind(this, itemName)}>Remove Item</div>
+                <div className="clickable remove-item" onClick={this.removeItem.bind(this, itemId)}>Remove Item</div>
             </li>
         )
     }
@@ -50,8 +49,8 @@ class ItemListComponent extends React.Component {
         return str
     }
 
-    removeItem(itemName) {
-        this.props.removeItem(itemName);
+    removeItem(itemId) {
+        this.props.removeItem(itemId);
     }
 }
 
