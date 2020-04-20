@@ -126,18 +126,19 @@ class SplitComponent extends React.Component {
         return this.props.people[index].total
     }
 
-    personItem = (person, itemName) => {
-        if (this.props.items[itemName].people.indexOf(person) >= 0) {
-            var itemPrice = this.props.items[itemName].price
-            var numPeople = this.props.items[itemName].people.length
-            var perItemPrice = parseFloat(itemPrice/numPeople).toFixed(2)
+    personItem = (person, itemId) => {
+        if (this.props.items[itemId].people.indexOf(person) >= 0) {
+            const itemPrice = this.props.items[itemId].price
+            const numPeople = this.props.items[itemId].people.length
+            const itemName = this.props.items[itemId].name
+            const perItemPrice = parseFloat(itemPrice/numPeople).toFixed(2)
             if (numPeople == 1) {
                 return (
-                    <li key={ itemName + itemPrice }>{ itemName } is ${ perItemPrice }</li>
+                    <li>{ itemName } is ${ perItemPrice }</li>
                 )
             }
             return (
-                <li key={ itemName + "-" + itemPrice }>{ itemName } is ${ perItemPrice } per person</li>
+                <li key={ itemId + person }>{ itemName } is ${ perItemPrice } per person</li>
             )
         }
         else {
