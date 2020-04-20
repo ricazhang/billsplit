@@ -20,7 +20,8 @@ class FeesComponent extends React.Component {
     renderFee = (fee, index) => {
         return (
             <div key={ this.getKey(index) } className="aligned-row fee-container">
-                $<input type="tel" value={ fee.formatted } ref={ this.getKey(index) } className="iterated-input" onFocus={ this.startEditingFee.bind(this, index, 'inputFocus') } onChange={ this.handleChange }/>
+                {/*Input type is tel for mobile users to use telephone pad to type in numbers instead of keyboard*/}
+                <input type="tel" defaultValue="0" ref={ this.getKey(index) } className="iterated-input" onFocus={ this.startEditingFee.bind(this, index, 'inputFocus') } onChange={ this.handleChange }/>
                 <button className="right-button" onClick={ this.appendPeriod.bind(this, index) }>.</button>
                 <span className="clickable right-clickable" onClick={ this.startEditingFee.bind(this, index, 'editButton') }>Edit</span>
                 <span className="clickable right-clickable" onClick={ this.deleteFee.bind(this, index) }>Delete</span>
@@ -36,7 +37,6 @@ class FeesComponent extends React.Component {
         if (this.refs[this.getKey(index)].value.indexOf(".") === -1) {
             this.props.editFee({
                 amount: this.props.fees[index].amount,
-                formatted: this.props.fees[index].formatted + ".",
             }, this.state.editingIndex)
         }
         findDOMNode(this.refs[this.getKey(index)]).focus(); 
@@ -59,13 +59,11 @@ class FeesComponent extends React.Component {
     }
 
     handleChange = (event) => {
-        console.log("editing", this.state.editingIndex);
-        if (event.target.value.trim().length > 0) {
-            this.props.editFee({ 
-                amount: parseFloat(event.target.value),
-                formatted: event.target.value
-            }, this.state.editingIndex)
-        }
+    console.log("editing", this.state.editingIndex);
+    const trimmedValue = event.target.value.trim() || "0";
+        this.props.editFee({
+            amount: parseFloat(trimmedValue),
+        }, this.state.editingIndex)
     }
 } 
 

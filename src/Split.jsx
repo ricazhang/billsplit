@@ -200,7 +200,6 @@ class SplitComponent extends React.Component {
         this.setState({
             fees: this.state.fees.concat({
                 amount: 0,
-                formatted: "0",
             })
         })
     }
