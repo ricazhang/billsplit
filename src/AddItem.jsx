@@ -25,11 +25,11 @@ class AddItemComponent extends React.Component {
                     <button className="right-button" onClick={ this.appendPeriod }>.</button>
                 </div>
                 <div>
-                    <p className="section-label">Who is splitting this item?
+                    <h3 className="section-label top-spacing-small">Who is splitting this item?
                         <span type="button" className="clickable left-pad" onClick={ this.selectEveryone }>{ this.state.selectText }</span>
-                    </p>
-                    <div id="person-checkbox-container">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
-                    <p className="error-message">{ this.state.errorMessage }</p>
+                    </h3>
+                    <div id="person-checkbox-container" className="top-spacing-small">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
+                    <div className="error-message top-spacing-small">{ this.state.errorMessage }</div>
                     <button id="add-item-button" type="button" onClick={ this.addItem }>Add Item</button>
                 </div>
             </div>
@@ -42,9 +42,9 @@ class AddItemComponent extends React.Component {
                 <input type="checkbox" className="person-checkbox" name={ person.name } checked={ this.props.selectedPeople.indexOf(person.name) > -1 }/>
                 <label htmlFor={ person.name } className="person-checkbox-label">
                     <span className="person-checkbox-plus">
-                        <svg class="bi bi-plus" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M8 3.5a.5.5 0 01.5.5v4a.5.5 0 01-.5.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z" clip-rule="evenodd"/>
-                            <path fill-rule="evenodd" d="M7.5 8a.5.5 0 01.5-.5h4a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8z" clip-rule="evenodd"/>
+                        <svg className="bi bi-plus" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fillRule="evenodd" d="M8 3.5a.5.5 0 01.5.5v4a.5.5 0 01-.5.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z" clipRule="evenodd"/>
+                            <path fillRule="evenodd" d="M7.5 8a.5.5 0 01.5-.5h4a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8z" clipRule="evenodd"/>
                         </svg>
                     </span>
                     <span className="person-checkbox-name">
