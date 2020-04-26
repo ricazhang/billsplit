@@ -26,7 +26,7 @@ class AddItemComponent extends React.Component {
                 </div>
                 <div>
                     <h3 className="section-label top-spacing-small">Who is splitting this item?
-                        <span type="button" className="clickable left-pad" onClick={ this.selectEveryone }>{ this.state.selectText }</span>
+                        <span type="button" className="clickable left-pad" id="select-everyone" onClick={ this.selectEveryone }>{ this.state.selectText }</span>
                     </h3>
                     <div id="person-checkbox-container" className="top-spacing-small">{ this.props.people.map( this.renderPersonCheckbox ) }</div>
                     <div className="error-message top-spacing-small">{ this.state.errorMessage }</div>
