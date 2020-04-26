@@ -218,6 +218,23 @@ button:disabled {
     line-height: 40px;
     border: 2px solid #FFC0CB;
     background-color: white;
+    position: relative;
+    padding-left: calc(1.25em + 1.5em); /* calc(30px + 1.5em); */ /* ensures name doesn't overlap with + icon */
+}
+
+.person-checkbox-plus {
+    color: #DB7093;
+    position: absolute;
+    left: 0.625em; /* left: 0.9375em;*/
+    top: 0.375em; /* 12*/
+}
+.person-checkbox-plus svg {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.person-checkbox-name {
+    margin-left: -1.5em; /* left adjustment for + icon */
 }
 
 .person-checkbox:active + .person-checkbox-label {
@@ -257,6 +274,44 @@ button:disabled {
     clear: both;
 }
 
+.item-container {
+    background-color: #ededed;
+    border-radius: 0.25em;
+    position: relative;
+    padding: 0.625em 0.9375em;
+    margin-top: 0.625em;
+}
+
+.item-title {
+    font-weight: 500;
+    border-bottom: 0.0625em solid #f9f9f9;
+    padding-bottom: 0.3125em;
+}
+
+.item-title > div {
+    display: inline-block;
+}
+
+.item-price {
+    float: right;
+    margin-right: calc(1em + 0.3125em + 0.3125em); 
+}
+
+.item-price-per-person {
+    color: #adadad;
+}
+.remove-item {
+    position: absolute;
+    top: 0.625em;
+    right: 0.625em;
+}
+
+.split-by-subtitle {
+    color: #bababa;
+    font-size: 0.75em;
+    letter-spacing: 0.0625em;
+    margin-top: 0.375em;
+}
 .aligned-row > * {
     vertical-align: middle;
 }

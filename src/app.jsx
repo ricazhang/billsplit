@@ -28,14 +28,14 @@ class App extends React.Component {
             return (
                 <section>
                     <div className="section" id="people-section">
-                        <p>Easily split bills between friends.</p>
+                        <div className="top-spacing-small">Easily split bills between friends.</div>
                         { this.renderLoadSavedState() }
                         <h3>People</h3>
                         <AddPersonComponent onAdd={ this.addPerson } addBlock={ this.addBlock.bind(this) }/>
                         <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } />
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
-                    <button type="button" ref="done-button" disabled={ this.state.people.length === 0 } className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
+                    <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
                     <div className="vertical-space"></div>
                 </section>
             )
@@ -55,7 +55,7 @@ class App extends React.Component {
                     </div>
                     <p className="error-message">{ this.state.errorMessage }</p>
                     <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
-                    {/* <div className="clickable right-clickable" onClick={ this.addSampleItems }>Sample Items</div> */}
+                    <div className="clickable right-clickable" onClick={ this.addSampleItems }>Sample Items</div>
                     <div className="vertical-space"></div>
                 </section>
             )
@@ -75,7 +75,7 @@ class App extends React.Component {
     renderLoadSavedState = () => {
         if (localStorage.getItem("AppComponent")) {
             return (
-                <div className="clickable" onClick={ this.loadSavedState }>Load Previous Session</div>
+                <div className="clickable top-spacing-small" onClick={ this.loadSavedState }>Load Previous Session</div>
             )
         }
     }
