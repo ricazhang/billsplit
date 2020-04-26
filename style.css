@@ -1,13 +1,25 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif+TC|Roboto|Open+Sans');
+@import './meyer-reset.css';
 
-
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+html {
+    height: 100%; 
 }
 
-.footer {
+body {
+    font-family: sans-serif;
+    line-height: 1.4;
+}
+@media only screen and (max-device-width: 414px) {
+    body {
+        line-height: 1.3;
+    }
+}
+
+h3 {
+    font-size: 22px;
+}
+
+footer {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -19,21 +31,18 @@ html, body {
 header {
     font-family: 'Noto Serif TC';
     width: 100%;
-    min-height: 25%;
-    height: 20vw;
+    height: 20vh;
     left: 0;
-    top: -100px;
-    overflow: hidden;
-    /* transform: skewY(-7deg); */
-    transform-origin: 0;
+    top: 0;
     background: linear-gradient(150deg,#9ACD32 10%, #FFC0CB 70%);
     opacity: 0.5;
     position: absolute;
 }
 
 #entry-point {
-    margin-top: 10vh;
-    padding-top: 100px;
+    padding-top: calc(20vh + 20px);
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 #page-title {
@@ -45,6 +54,26 @@ header {
     padding-bottom: 2vh;
 }
 
+@media only screen and (max-device-width: 500px) {
+    #select-everyone {
+        display: block;
+        margin-left: 0;
+        font-size: 16px;
+    }
+}
+
+.top-spacing-xsmall {
+    margin-top: 5px;
+}
+.top-spacing-small {
+    margin-top: 10px;
+}
+.top-spacing-medium {
+    margin-top: 15px;
+}
+.top-spacing-large {
+    margin-top: 20px;
+}
 
 .error-message {
     color: #f26968;
@@ -57,11 +86,10 @@ header {
 
 input {
     font-family: inherit;
+    font-size: inherit;
     border-width: 1px;
     border-style: solid;
     border-color: #dfe2d2;
-    outline: none;
-    font-size: 16px;
     padding: 6px;
 }
 
@@ -106,11 +134,6 @@ input:focus {
 
 .iterated-input:focus {
     border-color: transparent;
-    border-bottom-color: #9ACD32; 
-}
-
-.section-label {
-    font-weight: bold;
 }
 
 .clickable {
@@ -127,11 +150,6 @@ input:focus {
 
 .clickable:hover {
     cursor: pointer;
-}
-
-#select-everyone-button {
-    display: inline;
-    margin-left: 5px;
 }
 
 button {
@@ -157,8 +175,7 @@ button:disabled {
 
 .accent-button {
     background-color: #DB7093;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 }
 
 .sub-button {
@@ -175,13 +192,13 @@ button:disabled {
     text-align: right;
     margin-right: 10px;
 }
-
-.person-list-container {
-    margin-top: 5px;
+@media only screen and (max-device-width: 500px) {
+    .responsive-inline-input-container > label {
+        width: 100px;
+    }
 }
 
 #person-checkbox-container {
-    margin-top: 5px;
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -218,6 +235,23 @@ button:disabled {
     line-height: 40px;
     border: 2px solid #FFC0CB;
     background-color: white;
+    position: relative;
+    padding-left: calc(10px + 1.5em); /* ensures name doesn't overlap with + icon */
+}
+
+.person-checkbox-plus {
+    color: #DB7093;
+    position: absolute;
+    left: 10px;
+    top: 6px;
+}
+.person-checkbox-plus svg {
+    width: 24px;
+    height: 24px;
+}
+
+.person-checkbox-name {
+    margin-left: -24px; /* left adjustment for + icon */
 }
 
 .person-checkbox:active + .person-checkbox-label {
@@ -253,21 +287,55 @@ button:disabled {
     color: white;
 }
 
-#add-item-button {
-    clear: both;
+.item-container {
+    background-color: #ededed;
+    border-radius: 2px;
+    position: relative;
+    padding: 10px 15px;
+    margin-top: 10px;
+}
+
+.item-title {
+    font-weight: 600;
+    border-bottom: 1px solid #f9f9f9;
+    padding-bottom: 5px;
+}
+
+.item-title > div {
+    display: inline-block;
+}
+
+.item-price {
+    float: right;
+    margin-right: 16px;  /* todo(rica) */
+}
+
+.item-price-per-person {
+    color: #adadad;
+}
+.remove-item {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.split-by-subtitle {
+    color: #bababa;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-top: 5px;
 }
 
 .aligned-row > * {
     vertical-align: middle;
 }
-.breakdown-container {
-    margin-top: 5px;
-}
-.person-split-container {
-    margin-bottom: 5px;
-} 
+
 .person-split-container ul {
     margin-top: 5px;
+}
+
+.split-container {
+    margin-bottom: 40px;
 }
 
 .vertical-space {
