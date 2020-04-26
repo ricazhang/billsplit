@@ -1,24 +1,22 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif+TC|Roboto|Open+Sans');
-@import 'meyer-reset.css';
+@import './meyer-reset.css';
 
 html {
     height: 100%; 
 }
-@media only screen and (max-device-width: 414px) {
-    html {
-        font-family: sans-serif;
-        font-size: 36px;
-    }
-}
 
 body {
-    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    font-family: sans-serif;
+    line-height: 1.4;
+}
+@media only screen and (max-device-width: 414px) {
+    body {
+        line-height: 1.3;
+    }
 }
 
-@media only screen and (max-device-width: 414px) {
-    h1 {
-        font-size: 2em;
-    }
+h3 {
+    font-size: 18px;
 }
 
 footer {
@@ -28,11 +26,6 @@ footer {
     height: 5px;
     width: 100%;
     background: linear-gradient(150deg,#9ACD32 10%, #FFC0CB 70%);
-}
-@media only screen and (max-device-width: 414px) {
-    footer {
-        height: 15px;
-    }
 }
 
 header {
@@ -61,6 +54,12 @@ header {
     padding-bottom: 2vh;
 }
 
+.top-spacing-xsmall {
+    margin-top: 5px;
+}
+.top-spacing-small {
+    margin-top: 10px;
+}
 
 .error-message {
     color: #f26968;
@@ -73,22 +72,11 @@ header {
 
 input {
     font-family: inherit;
+    font-size: inherit;
     border-width: 1px;
     border-style: solid;
     border-color: #dfe2d2;
-    outline: none;
-    font-size: 16px;
     padding: 6px;
-}
-@media only screen and (max-device-width: 414px) {
-    input {
-        font-size: inherit;
-        padding: 16px;
-        border-width: 2px;
-    }
-    input:focus {
-        border-width: 2px;
-    }
 }
 
 .left-input, .left-button {
@@ -119,32 +107,6 @@ input {
 .responsive-inline-input-container > input.tax-tip {
     width: 30%;
 }
-@media only screen and (max-device-width: 414px) {
-    .responsive-inline-input-container {
-        display: inline-block;
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    .responsive-inline-input-container > input{
-        display: inline-block;
-        width: 40%;
-    }
-    .responsive-inline-input-container > button {
-        display: inline-block;
-    }
-    .responsive-inline-input-container > label {
-        display: inline-block;
-        width: calc(40% - 10px);
-        text-align: right;
-        margin-right: 15px;
-    }
-    .responsive-inline-input-container > .tip-units-checkbox-label {
-        height: 2.25em;
-        line-height: 2.25em;
-        padding-right: 20px;
-        padding-left: 20px;
-    }
-}
 
 input:focus {
     border-color: #9ACD32;
@@ -158,11 +120,6 @@ input:focus {
 
 .iterated-input:focus {
     border-color: transparent;
-    border-bottom-color: #9ACD32; 
-}
-
-.section-label {
-    font-weight: bold;
 }
 
 .clickable {
@@ -181,17 +138,6 @@ input:focus {
     cursor: pointer;
 }
 
-#select-everyone-button {
-    display: inline;
-    margin-left: 5px;
-}
-@media only screen and (max-device-width: 414px) {
-    #select-everyone-button {
-        margin-top: 1em;
-        margin-left: 10px;
-    }
-}
-
 button {
     background-color: #9ACD32;
     color: white;
@@ -202,16 +148,6 @@ button {
     padding: 0 10px;
     margin: 0 5px;
     border-radius: 2px;
-}
-@media only screen and (max-device-width: 414px) {
-    button {
-        font-size: inherit;
-        height: 85px;
-        border-radius: 6px;
-        line-height: 2.25em;
-        padding-left: 1em;
-        padding-right: 1em;
-    }
 }
 
 button:hover {
@@ -225,8 +161,7 @@ button:disabled {
 
 .accent-button {
     background-color: #DB7093;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 }
 
 .sub-button {
@@ -243,13 +178,13 @@ button:disabled {
     text-align: right;
     margin-right: 10px;
 }
-
-.person-list-container {
-    margin-top: 5px;
+@media only screen and (max-device-width: 500px) {
+    .responsive-inline-input-container > label {
+        width: 100px;
+    }
 }
 
 #person-checkbox-container {
-    margin-top: 5px;
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -270,14 +205,14 @@ button:disabled {
     width: 200px;
     height: 40px;
 }
-@media only screen and (max-device-width: 414px) {
+/* @media only screen and (max-device-width: 414px) {
     .person-checkbox-line {
         margin-bottom: 15px;
         margin-right: 15px;
         width: 300px;
         height: 150px;
     }
-}
+} */
 
 .person-checkbox-line:hover {
     cursor: pointer;
@@ -295,27 +230,22 @@ button:disabled {
     border: 2px solid #FFC0CB;
     background-color: white;
     position: relative;
-    padding-left: calc(1.25em + 1.5em); /* calc(30px + 1.5em); */ /* ensures name doesn't overlap with + icon */
-}
-@media only screen and (max-device-width: 414px) {
-    .person-checkbox-label { 
-        line-height: 150px;
-    }
+    padding-left: calc(10px + 1.5em); /* ensures name doesn't overlap with + icon */
 }
 
 .person-checkbox-plus {
     color: #DB7093;
     position: absolute;
-    left: 0.625em; /* left: 0.9375em;*/
-    top: 0.375em; /* 12*/
+    left: 10px;
+    top: 6px;
 }
 .person-checkbox-plus svg {
-    width: 1.5em;
-    height: 1.5em;
+    width: 24px;
+    height: 24px;
 }
 
 .person-checkbox-name {
-    margin-left: -1.5em; /* left adjustment for + icon */
+    margin-left: -24px; /* left adjustment for + icon */
 }
 
 .person-checkbox:active + .person-checkbox-label {
@@ -352,27 +282,21 @@ button:disabled {
 }
 
 #add-item-button {
-    clear: both;
-}
-@media only screen and (max-device-width: 414px) {
-    #add-item-button {
-        margin-top: 1em;
-        margin-bottom: 1em;
-    }
+    margin-bottom: 16px;
 }
 
 .item-container {
     background-color: #ededed;
-    border-radius: 0.25em;
+    border-radius: 2px;
     position: relative;
-    padding: 0.625em 0.9375em;
-    margin-top: 0.625em;
+    padding: 10px 15px;
+    margin-top: 10px;
 }
 
 .item-title {
-    font-weight: 500;
-    border-bottom: 0.0625em solid #f9f9f9;
-    padding-bottom: 0.3125em;
+    font-weight: 600;
+    border-bottom: 1px solid #f9f9f9;
+    padding-bottom: 5px;
 }
 
 .item-title > div {
@@ -381,7 +305,7 @@ button:disabled {
 
 .item-price {
     float: right;
-    margin-right: calc(1em + 0.3125em + 0.3125em); 
+    margin-right: 16px;  /* todo(rica) */
 }
 
 .item-price-per-person {
@@ -389,39 +313,27 @@ button:disabled {
 }
 .remove-item {
     position: absolute;
-    top: 0.625em;
-    right: 0.625em;
+    top: 10px;
+    right: 10px;
 }
 
 .split-by-subtitle {
     color: #bababa;
-    font-size: 0.75em;
-    letter-spacing: 0.0625em;
-    margin-top: 0.375em;
-}
-.aligned-row > * {
-    vertical-align: middle;
-}
-.breakdown-container {
+    font-size: 12px;
+    letter-spacing: 1px;
     margin-top: 5px;
 }
-@media only screen and (max-device-width: 414px) {
-    .breakdown-container {
-        margin-top: 15px;
-    }
-}
 
-.person-split-container {
-    margin-bottom: 5px;
-} 
-@media only screen and (max-device-width: 414px) {
-    .person-split-container {
-        margin-bottom: 15px;
-    }
+.aligned-row > * {
+    vertical-align: middle;
 }
 
 .person-split-container ul {
     margin-top: 5px;
+}
+
+.split-container {
+    margin-bottom: 40px;
 }
 
 .vertical-space {

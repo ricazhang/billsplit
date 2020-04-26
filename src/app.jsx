@@ -28,14 +28,14 @@ class App extends React.Component {
             return (
                 <section>
                     <div className="section" id="people-section">
-                        <div className="top-spacing-small">Easily split bills between friends.</div>
+                        <div>Easily split bills between friends.</div>
                         { this.renderLoadSavedState() }
-                        <h3>People</h3>
+                        <h3 className="top-spacing-small">People</h3>
                         <AddPersonComponent onAdd={ this.addPerson } addBlock={ this.addBlock.bind(this) }/>
                         <PersonListComponment handleNameChange={ this.handleNameChange } editPerson={ this.editPerson } deletePerson={ this.deletePerson } people={ this.state.people } />
                     </div>
-                    <p className="error-message">{ this.state.errorMessage }</p>
-                    <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
+                    <div className="error-message top-spacing-small">{ this.state.errorMessage }</div>
+                    <button type="button" ref="done-button" className="accent-button top-spacing-small" onClick={ this.switchPage.bind(this, "items") }>Add Items to the Bill  &rsaquo;</button>
                     <div className="vertical-space"></div>
                 </section>
             )
@@ -50,11 +50,11 @@ class App extends React.Component {
                     </div>
                     <div className="section">
                         <h3>Items on the Bill ({Object.keys(this.state.items).length})</h3>
-                        <div>Subtotal: ${ this.state.subtotal.toFixed(2) }</div>
+                        <div className="top-spacing-xsmall">Subtotal: ${ this.state.subtotal.toFixed(2) }</div>
                         <ItemListComponent items={ this.state.items } removeItem={this.removeItem} numPeople={ this.state.people.length }/>
                     </div>
-                    <p className="error-message">{ this.state.errorMessage }</p>
-                    <button type="button" ref="done-button" className="accent-button" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
+                    <div className="error-message top-spacing-small">{ this.state.errorMessage }</div>
+                    <button type="button" ref="done-button" className="accent-button top-spacing-xsmall" onClick={ this.switchPage.bind(this, "subtotal") }>Calculate Split &rsaquo;</button>
                     <div className="clickable right-clickable" onClick={ this.addSampleItems }>Sample Items</div>
                     <div className="vertical-space"></div>
                 </section>
@@ -75,7 +75,7 @@ class App extends React.Component {
     renderLoadSavedState = () => {
         if (localStorage.getItem("AppComponent")) {
             return (
-                <div className="clickable top-spacing-small" onClick={ this.loadSavedState }>Load Previous Session</div>
+                <div className="clickable top-spacing-xsmall" onClick={ this.loadSavedState }>Load Previous Session</div>
             )
         }
     }

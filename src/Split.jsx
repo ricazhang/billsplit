@@ -22,7 +22,7 @@ class SplitComponent extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="split-container">
                 <div style={{marginTop: '15px', marginBottom: '15px'}}>Here is the split { this.props.status }!</div>
                 <div className="responsive-inline-input-container aligned-row">
                     <label>Tip:  </label>
@@ -45,7 +45,7 @@ class SplitComponent extends React.Component {
                 <div className="section-label">Gratuity: ${ this.calculateGratuity().toFixed(2) }</div>
                 { this.renderFeesTotal() }
                 <div className="section-label">Total: ${ this.state.total.toFixed(2) }</div>
-                <div className="top-spacing-small">{ this.props.people.map(this.renderPerson) }</div>
+                <div className="top-spacing-xsmall">{ this.props.people.map(this.renderPerson) }</div>
             </div>
         )
     }
@@ -65,7 +65,7 @@ class SplitComponent extends React.Component {
 
     renderPerson = (person) => {
         return (
-            <div className="person-split-container" key={ person.id }>{ person.name } owes ${ this.getPersonTotal(person.name).toFixed(2) }
+            <div className="person-split-container top-spacing-xsmall" key={ person.id }>{ person.name } owes ${ this.getPersonTotal(person.name).toFixed(2) }
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person.name, item) ) }</ul>
             </div>
         )
