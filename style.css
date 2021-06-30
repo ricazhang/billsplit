@@ -330,8 +330,20 @@ button:disabled {
     vertical-align: middle;
 }
 
+.person-split-container {
+    background-color: #ededed;
+    border-radius: 2px;
+    position: relative;
+    padding: 10px 15px;
+    margin-top: 10px;
+}
+
 .person-split-container ul {
     margin-top: 5px;
+}
+
+.person-split-name {
+    font-weight: bold;
 }
 
 .split-container {

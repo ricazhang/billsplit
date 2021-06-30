@@ -65,7 +65,8 @@ class SplitComponent extends React.Component {
 
     renderPerson = (person) => {
         return (
-            <div className="person-split-container top-spacing-xsmall" key={ person.id }>{ person.name } owes ${ this.getPersonTotal(person.name).toFixed(2) }
+            <div className="person-split-container top-spacing-xsmall" key={ person.id }>
+                <div className="person-split-name">{ person.name } owes ${ this.getPersonTotal(person.name).toFixed(2) }</div>
                 <ul>{ Object.keys(this.props.items).map( item => this.personItem(person.name, item) ) }</ul>
             </div>
         )
