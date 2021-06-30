@@ -9,7 +9,7 @@ class AddPersonComponent extends React.Component {
     render() {
         return (
             <div className="aligned-row top-spacing-xsmall">
-                <input className="left-input" autoFocus type="text" ref="content" onKeyDown={ this.addPerson } placeholder="Name"/>
+                <input className="left-input" autocapitalize="on" autoFocus type="text" ref="content" onKeyDown={ this.addPerson } placeholder="Name"/>
                 <button className="right-button" onClick={ this.addPersonClick }>Add</button>
                 <span onClick={ this.addBlock } className="clickable right-clickable" ref="blockButton">Sample</span>
             </div>
