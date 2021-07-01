@@ -26,7 +26,8 @@ class SplitComponent extends React.Component {
                 <div style={{marginTop: '15px', marginBottom: '15px'}}>Here is the split { this.props.status }!</div>
                 <div className="responsive-inline-input-container aligned-row">
                     <label>Tip:  </label>
-                    <input type="number" className="tax-tip" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
+                    <input type="number" className="tax-tip" ref="tip" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) }/>
+                    <button disabled={this.state.tipUnits === '%'} className="right-button decimal-button" onClick={ this.appendPeriod.bind(this, "tip") }>.</button>
 
                     <input type="checkbox" ref="percentCheck" className="tip-units-checkbox" name="tip-percent" checked={this.state.tipUnits === '%'}/>
                     <label htmlFor="tip-percent" className="tip-units-checkbox-label" onClick={ this.applyTaxTip.bind(this, '%') }>%</label>
@@ -35,8 +36,8 @@ class SplitComponent extends React.Component {
                 </div>
                 <div className="responsive-inline-input-container aligned-row">
                     <label>Taxes and Fees: $</label>
-                    <input type="tel" className="tax-tip left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) } onFocus={ this.highlightAllText }/>
-                    <button className="right-button decimal-button" onClick={ this.appendPeriod }>.</button>
+                    <input type="tel" className="tax-tip left-input" ref="tax" defaultValue="0" onBlur={ this.applyTaxTip.bind(this, null) }/>
+                    <button className="right-button decimal-button" onClick={ this.appendPeriod.bind(this, "tax") }>.</button>
                     <span className="clickable right-clickable" onClick={ this.addFeeBox }>+ Fee</span>
                 </div>
                 <FeesComponent fees={ this.state.fees } editFee={ this.editFee } deleteFee={ this.deleteFee } />
@@ -191,11 +192,11 @@ class SplitComponent extends React.Component {
         event.target.select()
     }
 
-    appendPeriod = () => {
-        if (this.refs.tax.value.indexOf(".") === -1) {
-            this.refs.tax.value = this.refs.tax.value + "."
+    appendPeriod = (refName) => {
+        if (this.refs[refName].value.indexOf(".") === -1) {
+            this.refs[refName].value = this.refs[refName].value + "."
         }
-        findDOMNode(this.refs.tax).focus(); 
+        findDOMNode(this.refs[refName]).focus(); 
     }
 
     addFeeBox = () => {
